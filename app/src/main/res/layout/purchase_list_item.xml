@@ -1,0 +1,23 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="8dp"
+    android:gravity="center_vertical">
+
+    <TextView
+        android:id="@+id/txtPurchaseDetails"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Purchase Details"
+        android:textSize="16sp" />
+
+    <ImageView
+        android:id="@+id/btnDeletePurchase"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@android:drawable/ic_delete"
+        android:padding="8dp"
+        android:contentDescription="Delete Purchase"/>
+</LinearLayout>

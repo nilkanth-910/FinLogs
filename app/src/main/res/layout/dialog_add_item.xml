@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+        <EditText
+        android:id="@+id/edtBarcode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Barcode"
+        android:inputType="numberSigned"/>
+
+    <EditText
+        android:id="@+id/edtProductName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Product Name"/>
+
+    <EditText
+        android:id="@+id/edtHSN"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="HSN Code"
+        android:inputType="numberSigned"/>
+
+    <EditText
+        android:id="@+id/edtRate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Rate"
+        android:inputType="numberDecimal"/>
+
+    <EditText
+        android:id="@+id/edtTax"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Tax %"
+        android:inputType="numberDecimal"/>
+
+    <EditText
+        android:id="@+id/edtGrossPrice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Gross Price"
+        android:inputType="numberDecimal"/>
+
+    <EditText
+        android:id="@+id/edtSalePrice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Sale Price"
+        android:inputType="numberDecimal"/>
+
+    <EditText
+        android:id="@+id/edtMRP"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="MRP"
+        android:inputType="numberDecimal"/>
+
+    <EditText
+        android:id="@+id/edtStock"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Initial Stock"
+        android:inputType="number"/>
+
+    <Button
+        android:id="@+id/btnSaveItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Save"/>
+
+
+</LinearLayout>

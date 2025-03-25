@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <AutoCompleteTextView
+        android:id="@+id/edtSaleItemName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Item Name" />
+
+    <EditText
+        android:id="@+id/edtSalePrice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Sale Price" />
+
+    <EditText
+        android:id="@+id/edtSaleQty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Quantity" />
+
+    <Button
+        android:id="@+id/btnAddToSale"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add to Sale" />
+</LinearLayout>

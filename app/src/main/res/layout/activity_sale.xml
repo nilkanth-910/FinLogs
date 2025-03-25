@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#E8E8E8">
+
+    <include
+        layout="@layout/top_bar" />
+
+    <Button
+        android:id="@+id/btnAdd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add"
+        android:textColor="#333333"
+        android:textSize="18sp"
+        android:backgroundTint="#A5D1D1"
+        android:layout_marginBottom="16dp" />
+
+    <include
+        layout="@layout/list_container_layout" />
+
+</LinearLayout>

@@ -1,0 +1,55 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/edtPurchaseDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Purchase Date"
+        android:focusable="false"
+        android:clickable="true" />
+
+    <EditText
+        android:id="@+id/edtSupplierName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Supplier Name"
+        android:layout_marginTop="8dp" />
+
+    <EditText
+        android:id="@+id/edtInvoiceNo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Invoice No"
+        android:layout_marginTop="8dp" />
+
+    <Button
+        android:id="@+id/btnAddPurchaseItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Item"
+        android:layout_marginTop="8dp" />
+
+    <ListView
+        android:id="@+id/listViewPurchaseItems"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp" />
+
+    <TextView
+        android:id="@+id/txtTotalAmount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Total: ₹0.0"
+        android:layout_marginTop="8dp" />
+
+    <Button
+        android:id="@+id/btnSavePurchase"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save Purchase"
+        android:layout_marginTop="8dp" />
+</LinearLayout>
