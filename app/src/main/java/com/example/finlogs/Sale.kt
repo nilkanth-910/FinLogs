@@ -17,7 +17,7 @@ import java.util.*
 
 class Sale : AppCompatActivity() {
 
-    private lateinit var btnAddSale: Button
+    private lateinit var btnAddSale: com.google.android.material.floatingactionbutton.FloatingActionButton
     private lateinit var salesContainer: LinearLayout
     private lateinit var saleList: MutableList<SaleModel>
     private lateinit var databaseReference: DatabaseReference

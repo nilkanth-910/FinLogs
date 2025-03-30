@@ -1,77 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@drawable/dialog_rounded_background">
 
         <EditText
-        android:id="@+id/edtBarcode"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Barcode"
-        android:inputType="numberSigned"/>
+            android:id="@+id/edtBarcode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Barcode"
+            android:textColorHint="#000000"
+            android:textColor="#000000"
+            android:inputType="numberSigned"/>
 
-    <EditText
-        android:id="@+id/edtProductName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Product Name"/>
+        <EditText
+            android:id="@+id/edtProductName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Product Name"
+            android:textColorHint="#000000"
+            android:textColor="#000000"
+            android:layout_marginTop="8dp"/>
 
-    <EditText
-        android:id="@+id/edtHSN"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="HSN Code"
-        android:inputType="numberSigned"/>
+        <EditText
+            android:id="@+id/edtHSN"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="HSN Code"
+            android:textColorHint="#000000"
+            android:textColor="#000000"
+            android:inputType="numberSigned"
+            android:layout_marginTop="8dp"/>
 
-    <EditText
-        android:id="@+id/edtRate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Rate"
-        android:inputType="numberDecimal"/>
+        <EditText
+            android:id="@+id/edtRate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Rate"
+            android:textColorHint="#000000"
+            android:textColor="#000000"
+            android:inputType="numberDecimal"
+            android:layout_marginTop="8dp"/>
 
-    <EditText
-        android:id="@+id/edtTax"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Tax %"
-        android:inputType="numberDecimal"/>
+        <EditText
+            android:id="@+id/edtTax"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Tax %"
+            android:textColorHint="#000000"
+            android:textColor="#000000"
+            android:inputType="numberDecimal"
+            android:layout_marginTop="8dp"/>
 
-    <EditText
-        android:id="@+id/edtGrossPrice"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Gross Price"
-        android:inputType="numberDecimal"/>
+        <EditText
+            android:id="@+id/edtGrossPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Gross Price"
+            android:textColorHint="#000000"
+            android:textColor="#000000"
+            android:inputType="numberDecimal"
+            android:layout_marginTop="8dp"/>
 
-    <EditText
-        android:id="@+id/edtSalePrice"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Sale Price"
-        android:inputType="numberDecimal"/>
+        <EditText
+            android:id="@+id/edtSalePrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Sale Price"
+            android:textColorHint="#000000"
+            android:textColor="#000000"
+            android:inputType="numberDecimal"
+            android:layout_marginTop="8dp"/>
 
-    <EditText
-        android:id="@+id/edtMRP"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="MRP"
-        android:inputType="numberDecimal"/>
+        <EditText
+            android:id="@+id/edtMRP"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="MRP"
+            android:textColorHint="#000000"
+            android:textColor="#000000"
+            android:inputType="numberDecimal"
+            android:layout_marginTop="8dp"/>
 
-    <EditText
-        android:id="@+id/edtStock"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Initial Stock"
-        android:inputType="number"/>
+        <EditText
+            android:id="@+id/edtStock"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Initial Stock"
+            android:textColorHint="#000000"
+            android:textColor="#000000"
+            android:inputType="number"
+            android:layout_marginTop="8dp"/>
 
-    <Button
-        android:id="@+id/btnSaveItem"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Save"/>
-
-
-</LinearLayout>
+        <Button
+            android:id="@+id/btnSaveItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Save"
+            android:backgroundTint="#F2C7C7"
+            android:textColor="#333333"
+            android:layout_marginTop="16dp"/>
+    </LinearLayout>
+</ScrollView>

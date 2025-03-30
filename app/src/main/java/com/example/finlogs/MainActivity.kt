@@ -76,52 +76,56 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadLatestSales() {
         salesReference.orderByChild("date").limitToLast(5)
-            .get().addOnSuccessListener { snapshot ->
-                val salesList = mutableListOf<SaleModel>()
-                val reversedSnapshot = snapshot.children.reversed()
-                for (saleSnapshot in reversedSnapshot) {
-                    val sale = saleSnapshot.getValue(SaleModel::class.java)
-                    sale?.let {
-                        salesList.add(it)
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val salesList = mutableListOf<SaleModel>()
+                    val reversedSnapshot = snapshot.children.reversed()
+                    for (saleSnapshot in reversedSnapshot) {
+                        val sale = saleSnapshot.getValue(SaleModel::class.java)
+                        sale?.let {
+                            salesList.add(it)
+                        }
                     }
+                    val adapter = ArrayAdapter(
+                        this@MainActivity,
+                        android.R.layout.simple_list_item_1,
+                        salesList.map { "${it.customerName} | ${it.invoiceNo} | ₹${it.totalAmount} | ${it.date}" }
+                    )
+                    latestListView.adapter = adapter
                 }
-                val adapter = ArrayAdapter(
-                    this,
-                    android.R.layout.simple_list_item_1, // Use a simple built-in layout
-                    salesList.map { "${it.customerName}| ${it.invoiceNo} | ₹${it.totalAmount} | ${it.date}" } // Format how each item is displayed
-                )
 
-                latestListView.adapter = adapter // Set the adapter to the ListView
-
-            }.addOnFailureListener { error ->
-                Log.e("Firebase", "Error loading latest sales: ${error.message}")
-                Toast.makeText(this, "Error loading latest sales.", Toast.LENGTH_SHORT).show()
-            }
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("Firebase", "Error loading latest sales: ${error.message}")
+                    Toast.makeText(this@MainActivity, "Error loading latest sales.", Toast.LENGTH_SHORT).show()
+                }
+            })
     }
 
-
     private fun loadLatestPurchases() {
-        purchasesReference.orderByChild("date").limitToLast(5) // Assuming 'date' field for sorting
-            .get().addOnSuccessListener { snapshot ->
-                val purchasesList = mutableListOf<String>()
-                val reversedSnapshot = snapshot.children.reversed()
-                for (purchaseSnapshot in reversedSnapshot) {
-                    val purchase = purchaseSnapshot.getValue(PurchaseModel::class.java)
-                    purchase?.let {
-                        purchasesList.add("${it.supplierName}| ${it.invoiceNo} | ₹${it.totalAmount} | ${it.date}")
+        purchasesReference.orderByChild("date").limitToLast(5)
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val purchasesList = mutableListOf<String>()
+                    val reversedSnapshot = snapshot.children.reversed()
+                    for (purchaseSnapshot in reversedSnapshot) {
+                        val purchase = purchaseSnapshot.getValue(PurchaseModel::class.java)
+                        purchase?.let {
+                            purchasesList.add("${it.supplierName} | ${it.invoiceNo} | ₹${it.totalAmount} | ${it.date}")
+                        }
                     }
+                    val adapter = ArrayAdapter(
+                        this@MainActivity,
+                        android.R.layout.simple_list_item_1,
+                        purchasesList
+                    )
+                    latestListView.adapter = adapter
                 }
-                val adapter = ArrayAdapter(
-                    this,
-                    android.R.layout.simple_list_item_1, // Use a simple built-in layout
-                    purchasesList
-                )
-                latestListView.adapter = adapter // Set the adapter to the ListView
 
-            }.addOnFailureListener { error ->
-                Log.e("Firebase", "Error loading latest purchases: ${error.message}")
-                Toast.makeText(this, "Error loading latest Purchases.", Toast.LENGTH_SHORT).show()
-            }
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("Firebase", "Error loading latest purchases: ${error.message}")
+                    Toast.makeText(this@MainActivity, "Error loading latest purchases.", Toast.LENGTH_SHORT).show()
+                }
+            })
     }
 
 //    private fun loadLatestExpenses() {

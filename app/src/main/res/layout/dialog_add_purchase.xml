@@ -1,55 +1,78 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:fillViewport="true">
 
-    <EditText
-        android:id="@+id/edtPurchaseDate"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Purchase Date"
-        android:focusable="false"
-        android:clickable="true" />
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@drawable/dialog_rounded_background">
 
-    <EditText
-        android:id="@+id/edtSupplierName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Supplier Name"
-        android:layout_marginTop="8dp" />
+        <EditText
+            android:id="@+id/edtPurchaseDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Purchase Date"
+            android:textColorHint="#000000"
+            android:textColor="#000000"
+            android:focusable="false"
+            android:clickable="true" />
 
-    <EditText
-        android:id="@+id/edtInvoiceNo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Invoice No"
-        android:layout_marginTop="8dp" />
+        <EditText
+            android:id="@+id/edtSupplierName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Supplier Name"
+            android:textColorHint="#000000"
+            android:textColor="#000000"
+            android:layout_marginTop="8dp" />
 
-    <Button
-        android:id="@+id/btnAddPurchaseItem"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add Item"
-        android:layout_marginTop="8dp" />
+        <EditText
+            android:id="@+id/edtInvoiceNo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Invoice No"
+            android:textColorHint="#000000"
+            android:textColor="#000000"
+            android:layout_marginTop="8dp" />
 
-    <ListView
-        android:id="@+id/listViewPurchaseItems"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp" />
+        <Button
+            android:id="@+id/btnAddPurchaseItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add Item"
+            android:backgroundTint="#D1C2E0"
+            android:textColor="#333333"
+            android:layout_marginTop="8dp" />
 
-    <TextView
-        android:id="@+id/txtTotalAmount"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Total: ₹0.0"
-        android:layout_marginTop="8dp" />
+        <ListView
+            android:id="@+id/listViewPurchaseItems"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_marginTop="8dp"
+            android:divider="@android:color/darker_gray"
+            android:dividerHeight="1dp" />
 
-    <Button
-        android:id="@+id/btnSavePurchase"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Save Purchase"
-        android:layout_marginTop="8dp" />
-</LinearLayout>
+        <TextView
+            android:id="@+id/txtTotalAmount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Total: ₹0.0"
+            android:textColor="#000000"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_marginTop="8dp" />
+
+        <Button
+            android:id="@+id/btnSavePurchase"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Save Purchase"
+            android:backgroundTint="#D1C2E0"
+            android:textColor="#333333"
+            android:layout_marginTop="8dp" />
+    </LinearLayout>
+</ScrollView>

@@ -1,33 +1,51 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:fillViewport="true">
 
-    <AutoCompleteTextView
-        android:id="@+id/edtPurchaseItemName"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Item Name" />
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@drawable/dialog_rounded_background">
 
-    <EditText
-        android:id="@+id/edtPurchaseGrossPrice"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Gross Price"
-        android:layout_marginTop="8dp" />
+        <AutoCompleteTextView
+            android:id="@+id/edtPurchaseItemName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Item Name"
+            android:textColorHint="#000000"
+            android:textColor="#000000"/>
 
-    <EditText
-        android:id="@+id/edtPurchaseQty"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Quantity"
-        android:layout_marginTop="8dp" />
+        <EditText
+            android:id="@+id/edtPurchaseGrossPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Gross Price"
+            android:textColorHint="#000000"
+            android:textColor="#000000"
+            android:inputType="numberDecimal"
+            android:layout_marginTop="8dp" />
 
-    <Button
-        android:id="@+id/btnAddToPurchase"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add to Purchase"
-        android:layout_marginTop="8dp" />
-</LinearLayout>
+        <EditText
+            android:id="@+id/edtPurchaseQty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Quantity"
+            android:textColorHint="#000000"
+            android:textColor="#000000"
+            android:inputType="number"
+            android:layout_marginTop="8dp" />
+
+        <Button
+            android:id="@+id/btnAddToPurchase"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add to Purchase"
+            android:backgroundTint="#D1C2E0"
+            android:textColor="#333333"
+            android:layout_marginTop="16dp" />
+    </LinearLayout>
+</ScrollView>

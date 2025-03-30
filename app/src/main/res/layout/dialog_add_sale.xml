@@ -1,49 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp"
-    android:orientation="vertical">
+    android:fillViewport="true">
 
-    <EditText
-        android:id="@+id/edtSaleDate"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Sale Date"
-        android:focusable="false"
-        android:clickable="true" />
+        android:padding="16dp"
+        android:orientation="vertical"
+        android:background="@drawable/dialog_rounded_background">
 
+        <EditText
+            android:id="@+id/edtSaleDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Sale Date"
+            android:textColorHint="#000000"
+            android:textColor="#000000"
+            android:focusable="false"
+            android:clickable="true" />
 
-    <EditText
-        android:id="@+id/edtCustomerName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Customer Name" />
+        <EditText
+            android:id="@+id/edtCustomerName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Customer Name"
+            android:textColorHint="#000000"
+            android:textColor="#000000"
+            android:layout_marginTop="8dp"/>
 
-    <Button
-        android:id="@+id/btnAddSaleItem"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Add Item" />
+        <Button
+            android:id="@+id/btnAddSaleItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add Item"
+            android:backgroundTint="#A5D1D1"
+            android:textColor="#333333"
+            android:layout_marginTop="8dp"/>
 
-    <ListView
-        android:id="@+id/listViewSaleItems"
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:divider="@android:color/darker_gray"
-        android:dividerHeight="1dp" />
+        <ListView
+            android:id="@+id/listViewSaleItems"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:divider="@android:color/darker_gray"
+            android:dividerHeight="1dp"
+            android:layout_marginTop="8dp"/>
 
-    <TextView
-        android:id="@+id/txtTotalAmount"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Total: ₹0.00"
-        android:textStyle="bold"
-        android:textSize="16sp" />
+        <TextView
+            android:id="@+id/txtTotalAmount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Total: ₹0.00"
+            android:textColor="#000000"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_marginTop="8dp"/>
 
-    <Button
-        android:id="@+id/btnSaveSale"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Save Sale" />
-</LinearLayout>
+        <Button
+            android:id="@+id/btnSaveSale"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Save Sale"
+            android:backgroundTint="#A5D1D1"
+            android:textColor="#333333"
+            android:layout_marginTop="8dp"/>
+    </LinearLayout>
+</ScrollView>

@@ -1,27 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
     android:background="#E8E8E8">
 
-    <include
-        layout="@layout/top_bar" />
-
-    <Button
-        android:id="@+id/btnAdd"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#E8E8E8"
+        android:fitsSystemWindows="true"
+        android:orientation="vertical">
+        <include layout="@layout/top_bar"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingBottom="2dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
+
+            <include
+                layout="@layout/list_container_layout"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnAdd"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add Purchase"
-        android:textColor="#333333"
-        android:textSize="18sp"
-        android:backgroundTint="#D1C2E0"
-        android:layout_marginBottom="16dp" />
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        app:srcCompat="@android:drawable/ic_input_add"
+        app:backgroundTint="#D1C2E0"
+        android:contentDescription="Add Purchase"
+        app:tint="#000000"/>
 
-    <include
-        layout="@layout/list_container_layout" />
-
-</LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

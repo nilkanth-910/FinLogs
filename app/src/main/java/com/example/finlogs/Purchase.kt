@@ -16,7 +16,7 @@ import java.util.Locale
 
 class Purchase : AppCompatActivity() {
 
-    private lateinit var btnAddPurchase: Button
+    private lateinit var btnAddPurchase: com.google.android.material.floatingactionbutton.FloatingActionButton
     private lateinit var purchaseContainer: LinearLayout
     private lateinit var purchaseList: MutableList<PurchaseModel>
     private lateinit var databaseReference: DatabaseReference

@@ -19,7 +19,7 @@ import kotlin.toString
 class Items : AppCompatActivity() {
 
     private lateinit var itemsContainer: LinearLayout
-    private lateinit var addButton: Button
+    private lateinit var addButton: com.google.android.material.floatingactionbutton.FloatingActionButton
     private lateinit var productList: MutableList<Product>
     private lateinit var databaseReference: DatabaseReference
     private val database = FirebaseDatabase.getInstance().reference.child("products")
@@ -32,7 +32,7 @@ class Items : AppCompatActivity() {
         topBarTitle.text = topBarTitle.text.toString() + " - Items"
 
         databaseReference = FirebaseDatabase.getInstance().getReference("products")
-        addButton = findViewById(R.id.btnAddItem)
+        addButton = findViewById(R.id.btnAdd)
         itemsContainer = findViewById(R.id.container)
 
         productList = mutableListOf()

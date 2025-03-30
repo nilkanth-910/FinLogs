@@ -1,31 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:fillViewport="true">
 
-    <AutoCompleteTextView
-        android:id="@+id/edtSaleItemName"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Item Name" />
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@drawable/dialog_rounded_background">
 
-    <EditText
-        android:id="@+id/edtSalePrice"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Sale Price" />
+        <AutoCompleteTextView
+            android:id="@+id/edtSaleItemName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Item Name"
+            android:textColorHint="#000000"
+            android:textColor="#000000"/>
 
-    <EditText
-        android:id="@+id/edtSaleQty"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Quantity" />
+        <EditText
+            android:id="@+id/edtSalePrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Sale Price"
+            android:textColorHint="#000000"
+            android:textColor="#000000"
+            android:inputType="numberDecimal"
+            android:layout_marginTop="8dp"/>
 
-    <Button
-        android:id="@+id/btnAddToSale"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Add to Sale" />
-</LinearLayout>
+        <EditText
+            android:id="@+id/edtSaleQty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Quantity"
+            android:textColorHint="#000000"
+            android:textColor="#000000"
+            android:inputType="number"
+            android:layout_marginTop="8dp"/>
+
+        <Button
+            android:id="@+id/btnAddToSale"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add to Sale"
+            android:backgroundTint="#A5D1D1"
+            android:textColor="#333333"
+            android:layout_marginTop="16dp"/>
+    </LinearLayout>
+</ScrollView>
