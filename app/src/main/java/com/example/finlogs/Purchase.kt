@@ -110,7 +110,7 @@ class Purchase : AppCompatActivity() {
         val supplierTextView = cardView.findViewById<TextView>(R.id.cstTextView)
 
         invoiceTextView.text = "${purchase.invoiceNo}"
-        purchaseAmountTextView.text = "Amount: ₹${purchase.totalAmount}"
+        purchaseAmountTextView.text = "₹${purchase.totalAmount}"
         purchaseDateTextView.text = "${purchase.date}"
         supplierTextView.text = "${purchase.supplierName}"
 

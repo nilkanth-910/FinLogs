@@ -27,20 +27,18 @@ class Items : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_items)
-        var topBarTitle = findViewById<TextView>(R.id.topBarTitle)
 
+        var topBarTitle = findViewById<TextView>(R.id.topBarTitle)
         topBarTitle.text = topBarTitle.text.toString() + " - Items"
 
         databaseReference = FirebaseDatabase.getInstance().getReference("products")
         addButton = findViewById(R.id.btnAdd)
         itemsContainer = findViewById(R.id.container)
-
         productList = mutableListOf()
 
         addButton.setOnClickListener {
             showAddItemPopup()
         }
-
 
         loadProducts()
     }
@@ -148,7 +146,7 @@ class Items : AppCompatActivity() {
 
     private fun showDeleteConfirmationDialog(product: Product) {
         AlertDialog.Builder(this)
-            .setTitle("Delete Sale")
+            .setTitle("Delete Item")
             .setMessage("Are you sure you want to delete this sale?")
             .setPositiveButton("Yes") { _, _ -> deleteItem(product) }
             .setNegativeButton("No", null)
