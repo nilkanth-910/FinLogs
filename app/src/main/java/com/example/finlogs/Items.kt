@@ -130,12 +130,15 @@ class Items : AppCompatActivity() {
         val itemNameTextView = cardView.findViewById<TextView>(R.id.invTextView)
         val productSalePriceTextView = cardView.findViewById<TextView>(R.id.amtTextView)
         val productMRPTextView = cardView.findViewById<TextView>(R.id.dateTextView)
+        val stockTextView = cardView.findViewById<TextView>(R.id.cstTextView)
 
         val deleteProductIcon = cardView.findViewById<ImageView>(R.id.deleteIcon)
 
         itemNameTextView.text = "${product.productName}"
         productSalePriceTextView.text = "GP: ₹${product.grossPrice}"
         productMRPTextView.text = "MRP: ₹${product.mrp}"
+        stockTextView.text = "Stock: ${product.stock}"
+
 
         deleteProductIcon.setOnClickListener {
             showDeleteConfirmationDialog(product)

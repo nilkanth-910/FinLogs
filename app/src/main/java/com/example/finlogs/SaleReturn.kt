@@ -13,11 +13,11 @@ import androidx.appcompat.app.AlertDialog
 import java.text.SimpleDateFormat
 import java.util.*
 
-class Sale : AppCompatActivity() {
+class SaleReturn : AppCompatActivity() {
 
-    private lateinit var btnAddSale: com.google.android.material.floatingactionbutton.FloatingActionButton
-    private lateinit var salesContainer: LinearLayout
-    private lateinit var saleList: MutableList<SaleModel>
+    private lateinit var btnAddSaleReturn: com.google.android.material.floatingactionbutton.FloatingActionButton
+    private lateinit var salesReturnContainer: LinearLayout
+    private lateinit var saleReturnList: MutableList<SaleReturnModel>
     private lateinit var databaseReference: DatabaseReference
     private lateinit var itemsReference: DatabaseReference
     private val itemNameMap = mutableMapOf<String, Product>()
@@ -25,25 +25,25 @@ class Sale : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_sale)
+        setContentView(R.layout.activity_sale_return)
         var topBarTitle = findViewById<TextView>(R.id.topBarTitle)
 
-        topBarTitle.text = topBarTitle.text.toString() + " - Sale"
+        topBarTitle.text = topBarTitle.text.toString() + " - Sale Return"
 
-        btnAddSale = findViewById(R.id.btnAdd)
-        salesContainer = findViewById(R.id.container)
+        btnAddSaleReturn = findViewById(R.id.btnAdd)
+        salesReturnContainer = findViewById(R.id.container)
 
-        saleList = mutableListOf()
-        databaseReference = FirebaseDatabase.getInstance().getReference("sales")
+        saleReturnList = mutableListOf()
+        databaseReference = FirebaseDatabase.getInstance().getReference("salesReturn")
         itemsReference = FirebaseDatabase.getInstance().getReference("products")
 
-        btnAddSale.setOnClickListener {
-            showAddSaleDialog()
+        btnAddSaleReturn.setOnClickListener {
+            showAddSaleReturnDialog()
         }
 
         itemAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, mutableListOf())
         loadItems()
-        loadSales()
+        loadSalesReturn()
     }
 
     private fun loadItems() {
@@ -71,85 +71,85 @@ class Sale : AppCompatActivity() {
         itemAdapter.notifyDataSetChanged()
     }
 
-    private fun loadSales() {
+    private fun loadSalesReturn() {
         databaseReference.orderByChild("date").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val tempList = mutableListOf<SaleModel>()
-                for (saleSnapshot in snapshot.children) {
-                    val sale = saleSnapshot.getValue(SaleModel::class.java)
-                    sale?.let { tempList.add(it) }
+                val tempList = mutableListOf<SaleReturnModel>()
+                for (saleReturnSnapshot in snapshot.children) {
+                    val saleReturn = saleReturnSnapshot.getValue(SaleReturnModel::class.java)
+                    saleReturn?.let { tempList.add(it) }
                 }
                 val reversedList = tempList.reversed()
 
-                salesContainer.removeAllViews() // Clear existing cards
+                salesReturnContainer.removeAllViews() // Clear existing cards
 
                 for (sale in reversedList) {
-                    addSaleCard(sale) // Add card for each sale
+                    addSaleReturnCard(sale) // Add card for each sale
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(this@Sale, "Failed to load sales!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@SaleReturn, "Failed to load sales!", Toast.LENGTH_SHORT).show()
             }
         })
     }
 
-    private fun addSaleCard(sale: SaleModel) {
-        val cardView = LayoutInflater.from(this).inflate(R.layout.list_card_layout, salesContainer, false) as CardView
+    private fun addSaleReturnCard(saleReturn: SaleReturnModel) {
+        val cardView = LayoutInflater.from(this).inflate(R.layout.list_card_layout, salesReturnContainer, false) as CardView
         val invoiceTextView = cardView.findViewById<TextView>(R.id.invTextView)
         val saleAmountTextView = cardView.findViewById<TextView>(R.id.amtTextView)
         val saleDateTextView = cardView.findViewById<TextView>(R.id.dateTextView)
         val deleteSaleIcon = cardView.findViewById<ImageView>(R.id.deleteIcon)
         val cstTextView = cardView.findViewById<TextView>(R.id.cstTextView)
 
-        invoiceTextView.text = "${sale.invoiceNo}"
-        saleAmountTextView.text = "₹${sale.totalAmount}"
-        cstTextView.text = "${sale.customerName}"
-        saleDateTextView.text = "${sale.date}"
+        invoiceTextView.text = "${saleReturn.returnInvoiceNo}"
+        saleAmountTextView.text = "₹${saleReturn.totalAmount}"
+        cstTextView.text = "${saleReturn.customerName}"
+        saleDateTextView.text = "${saleReturn.date}"
 
         deleteSaleIcon.setOnClickListener {
-            showDeleteConfirmationDialog(sale)
+            showDeleteConfirmationDialog(saleReturn)
         }
 
-        salesContainer.addView(cardView)
+        salesReturnContainer.addView(cardView)
     }
 
-    private fun showDeleteConfirmationDialog(sale: SaleModel) {
+    private fun showDeleteConfirmationDialog(saleReturn: SaleReturnModel) {
         AlertDialog.Builder(this)
-            .setTitle("Delete Sale")
+            .setTitle("Delete SaleReturn")
             .setMessage("Are you sure you want to delete this sale?")
-            .setPositiveButton("Yes") { _, _ -> deleteSale(sale) }
+            .setPositiveButton("Yes") { _, _ -> deleteSaleReturn(saleReturn) }
             .setNegativeButton("No", null)
             .show()
     }
 
-    private fun deleteSale(sale: SaleModel) {
-        val databaseReference = FirebaseDatabase.getInstance().getReference("sales")
+    private fun deleteSaleReturn(saleReturn: SaleReturnModel) {
+        val databaseReference = FirebaseDatabase.getInstance().getReference("salesReturn")
 
-        databaseReference.child(sale.saleId).removeValue()
+        databaseReference.child(saleReturn.saleReturnId).removeValue()
             .addOnSuccessListener {
-                Toast.makeText(this, "Sale deleted successfully!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "SaleReturn deleted successfully!", Toast.LENGTH_SHORT).show()
 
-                if (sale.saleItems.isEmpty()) {
-                    Toast.makeText(this, "No items in Sale Bill.", Toast.LENGTH_SHORT).show()
+                if (saleReturn.saleReturnItems.isEmpty()) {
+                    Toast.makeText(this, "No items in SaleReturn Bill.", Toast.LENGTH_SHORT).show()
                 } else {
-                    this.restoreStock(sale.saleItems)
+                    this.restoreStock(saleReturn.saleReturnItems)
                 }
             }
             .addOnFailureListener {
-                Toast.makeText(this, "Failed to delete sale!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Failed to delete saleReturn!", Toast.LENGTH_SHORT).show()
             }
     }
 
-    fun restoreStock(saleItems: List<SaleItemModel>) {
+    fun restoreStock(saleReturnItems: List<SaleItemModel>) {
 
-        for (item in saleItems) {
+        for (item in saleReturnItems) {
             val productRef = itemsReference.child(item.productId).child("stock")
 
             productRef.runTransaction(object : Transaction.Handler {
                 override fun doTransaction(mutableData: MutableData): Transaction.Result {
                     val currentStock = mutableData.getValue(Int::class.java) ?: 0
-                    val restoredStock = currentStock + item.qty
+                    val restoredStock = currentStock - item.qty
                     mutableData.value = restoredStock
                     return Transaction.success(mutableData)
                 }
@@ -168,16 +168,16 @@ class Sale : AppCompatActivity() {
         }
     }
 
-    private fun showAddSaleDialog() {
+    private fun showAddSaleReturnDialog() {
         val dialog = Dialog(this)
         dialog.setContentView(R.layout.dialog_add_sale)
 
         val edtDate = dialog.findViewById<EditText>(R.id.edtSaleDate)
         val edtCustomerName = dialog.findViewById<EditText>(R.id.edtCustomerName)
-        val btnAddSaleItem = dialog.findViewById<Button>(R.id.btnAddSaleItem)
-        val btnSaveSale = dialog.findViewById<Button>(R.id.btnSaveSale)
+        val btnAddSaleReturnItem = dialog.findViewById<Button>(R.id.btnAddSaleItem)
+        val btnSaveSaleReturn = dialog.findViewById<Button>(R.id.btnSaveSale)
         val txtTotalAmount = dialog.findViewById<TextView>(R.id.txtTotalAmount)
-        val listViewSaleItems = dialog.findViewById<ListView>(R.id.listViewSaleItems)
+        val listViewSaleReturnItems = dialog.findViewById<ListView>(R.id.listViewSaleItems)
 
         val calendar = Calendar.getInstance()
 
@@ -197,16 +197,16 @@ class Sale : AppCompatActivity() {
             datePicker.show()
         }
 
-        val saleItems = mutableListOf<SaleItemModel>()
+        val saleReturnItems = mutableListOf<SaleItemModel>()
 
-        btnAddSaleItem.setOnClickListener {
-            showAddSaleItemDialog(saleItems, listViewSaleItems, txtTotalAmount)
+        btnAddSaleReturnItem.setOnClickListener {
+            showAddSaleReturnItemDialog(saleReturnItems, listViewSaleReturnItems, txtTotalAmount)
         }
 
-        btnSaveSale.setOnClickListener {
+        btnSaveSaleReturn.setOnClickListener {
             val date = edtDate.text.toString()
             val customerName = edtCustomerName.text.toString()
-            val totalAmount = saleItems.sumOf { it.amount }
+            val totalAmount = saleReturnItems.sumOf { it.amount }
 
             if (date.isEmpty() || customerName.isEmpty()) {
                 Toast.makeText(this, "Fill all fields!", Toast.LENGTH_SHORT).show()
@@ -217,16 +217,16 @@ class Sale : AppCompatActivity() {
                 val newInvoiceNo = generateNextInvoiceNo(lastInvoiceNo)
                 val saleId = databaseReference.push().key!!
 
-                val sale = SaleModel(saleId, date, customerName, newInvoiceNo, totalAmount, saleItems)
+                val sale = SaleReturnModel(saleId, date, customerName, newInvoiceNo, totalAmount, saleReturnItems)
 
                 databaseReference.child(saleId).setValue(sale)
                     .addOnSuccessListener {
-                        Toast.makeText(this, "Sale Added!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "SaleReturn Added!", Toast.LENGTH_SHORT).show()
                         dialog.dismiss()
-                        updateStock(saleItems)
+                        updateStock(saleReturnItems)
                     }
                     .addOnFailureListener {
-                        Toast.makeText(this, "Failed to Add Sale!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Failed to Add SaleReturn!", Toast.LENGTH_SHORT).show()
                     }
             }
         }
@@ -235,8 +235,8 @@ class Sale : AppCompatActivity() {
     }
 
 
-    private fun showAddSaleItemDialog(
-        saleItems: MutableList<SaleItemModel>,
+    private fun showAddSaleReturnItemDialog(
+        saleReturnItems: MutableList<SaleItemModel>,
         listView: ListView,
         txtTotalAmount: TextView
     ) {
@@ -244,9 +244,9 @@ class Sale : AppCompatActivity() {
         dialog.setContentView(R.layout.dialog_add_sale_item)
 
         val edtItemName = dialog.findViewById<AutoCompleteTextView>(R.id.edtSaleItemName)
-        val edtSalePrice = dialog.findViewById<EditText>(R.id.edtSalePrice)
+        val edtSaleReturnPrice = dialog.findViewById<EditText>(R.id.edtSalePrice)
         val edtQty = dialog.findViewById<EditText>(R.id.edtSaleQty)
-        val btnAddToSale = dialog.findViewById<Button>(R.id.btnAddToSale)
+        val btnAddToSaleReturn = dialog.findViewById<Button>(R.id.btnAddToSale)
 
         edtItemName.setAdapter(itemAdapter)
         edtItemName.threshold = 1
@@ -255,22 +255,22 @@ class Sale : AppCompatActivity() {
             val selectedName = itemAdapter.getItem(position) ?: return@setOnItemClickListener
             val product = itemNameMap[selectedName]
             if (product != null) {
-                edtSalePrice.setText(String.format("%.2f", product.salePrice))
+                edtSaleReturnPrice.setText(String.format("%.2f", product.salePrice))
             }
         }
 
-        btnAddToSale.setOnClickListener {
+        btnAddToSaleReturn.setOnClickListener {
             val productName = edtItemName.text.toString()
-            val salePrice = edtSalePrice.text.toString().toDoubleOrNull() ?: 0.0
+            val saleReturnPrice = edtSaleReturnPrice.text.toString().toDoubleOrNull() ?: 0.0
             val qty = edtQty.text.toString().toIntOrNull() ?: 0
-            val amount = salePrice * qty
+            val amount = saleReturnPrice * qty
 
 
 
             val product = itemNameMap[productName] ?: return@setOnClickListener
             val productId = product.productId
 
-            if (productName.isEmpty() || salePrice < 0) {
+            if (productName.isEmpty() || saleReturnPrice < 0) {
                 Toast.makeText(this, "Invalid item details!", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
@@ -280,16 +280,16 @@ class Sale : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            saleItems.add(SaleItemModel(productId, productName, salePrice, qty, amount))
+            saleReturnItems.add(SaleItemModel(productId, productName, saleReturnPrice, qty, amount))
 
             val adapter = ArrayAdapter(
                 this,
                 android.R.layout.simple_list_item_1,
-                saleItems.map { "${it.productName} - ₹${String.format("%.2f", it.amount)}" }
+                saleReturnItems.map { "${it.productName} - ₹${String.format("%.2f", it.amount)}" }
             )
 
             listView.adapter = adapter
-            txtTotalAmount.text = "Total: ₹${saleItems.sumOf { it.amount }}"
+            txtTotalAmount.text = "Total: ₹${saleReturnItems.sumOf { it.amount }}"
 
             dialog.dismiss()
         }
@@ -304,9 +304,9 @@ class Sale : AppCompatActivity() {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     var lastInvoiceNo = "INV1000"
                     for (saleSnapshot in snapshot.children) {
-                        val lastSale = saleSnapshot.getValue(SaleModel::class.java)
+                        val lastSale = saleSnapshot.getValue(SaleReturnModel::class.java)
                         lastSale?.let {
-                            lastInvoiceNo = it.invoiceNo
+                            lastInvoiceNo = it.returnInvoiceNo
                         }
                     }
                     callback(lastInvoiceNo)
@@ -323,13 +323,13 @@ class Sale : AppCompatActivity() {
         return "INV${numberPart + 1}"
     }
 
-    private fun updateStock(saleItems: List<SaleItemModel>) {
-        Log.d("StockUpdate", "Updating stock for ${saleItems.size} items")
+    private fun updateStock(saleReturnItems: List<SaleItemModel>) {
+        Log.d("StockUpdate", "Updating stock for ${saleReturnItems.size} items")
 
-        for (item in saleItems) {
+        for (item in saleReturnItems) {
             val product = itemNameMap[item.productName]
             if (product != null) {
-                val newStock = product.stock - item.qty
+                val newStock = product.stock + item.qty
 
                 if (newStock >= 0) {
                     Log.d("StockUpdate", "Updating stock for ${item.productName} (ID: ${product.productId}): $newStock")

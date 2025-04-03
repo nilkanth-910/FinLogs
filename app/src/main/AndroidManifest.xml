@@ -29,6 +29,10 @@
             android:exported="false"/>
         <activity android:name=".Sale"
             android:exported="false"/>
+        <activity android:name=".SaleReturn"
+            android:exported="false"/>
+        <activity android:name=".PurchaseReturn"
+            android:exported="false"/>
 
     </application>
 

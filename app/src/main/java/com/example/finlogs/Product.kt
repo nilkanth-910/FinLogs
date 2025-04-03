@@ -10,5 +10,5 @@ data class Product(
     val grossPrice: Double = rate*(1+tax/100),
     val salePrice: Double = 0.0,
     val mrp: Double = 0.0,
-    var stock: Int = 0 // NEW: Stock field added
+    var stock: Int = 0
 )
