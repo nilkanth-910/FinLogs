@@ -28,7 +28,7 @@ class SaleReturn : AppCompatActivity() {
         setContentView(R.layout.activity_sale_return)
         var topBarTitle = findViewById<TextView>(R.id.topBarTitle)
 
-        topBarTitle.text = topBarTitle.text.toString() + " - Sale Return"
+        topBarTitle.text = "Sale Return"
 
         btnAddSaleReturn = findViewById(R.id.btnAdd)
         salesReturnContainer = findViewById(R.id.container)

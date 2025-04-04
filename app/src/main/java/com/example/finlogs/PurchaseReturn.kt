@@ -29,7 +29,7 @@ class PurchaseReturn : AppCompatActivity() {
         setContentView(R.layout.activity_purchase_return)
         var topBarTitle = findViewById<TextView>(R.id.topBarTitle)
 
-        topBarTitle.text = topBarTitle.text.toString() + " - Purchase Return"
+        topBarTitle.text = "Purchase Return"
 
         btnAddPurchaseReturn = findViewById(R.id.btnAdd)
         purchaseReturnContainer = findViewById(R.id.container)

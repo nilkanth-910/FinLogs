@@ -39,7 +39,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
         app:srcCompat="@android:drawable/ic_input_add"
-        app:backgroundTint="#D1C2E0"
+        app:backgroundTint="#C8E6C9"
         android:contentDescription="Add Purchase Return"
         app:tint="#000000"/>
 

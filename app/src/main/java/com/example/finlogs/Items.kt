@@ -29,7 +29,7 @@ class Items : AppCompatActivity() {
         setContentView(R.layout.activity_items)
 
         var topBarTitle = findViewById<TextView>(R.id.topBarTitle)
-        topBarTitle.text = topBarTitle.text.toString() + " - Items"
+        topBarTitle.text = "Items"
 
         databaseReference = FirebaseDatabase.getInstance().getReference("products")
         addButton = findViewById(R.id.btnAdd)

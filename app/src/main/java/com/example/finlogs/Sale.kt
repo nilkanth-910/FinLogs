@@ -26,9 +26,10 @@ class Sale : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sale)
+
         var topBarTitle = findViewById<TextView>(R.id.topBarTitle)
 
-        topBarTitle.text = topBarTitle.text.toString() + " - Sale"
+        topBarTitle.text = "Sales"
 
         btnAddSale = findViewById(R.id.btnAdd)
         salesContainer = findViewById(R.id.container)

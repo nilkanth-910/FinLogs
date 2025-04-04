@@ -16,8 +16,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Barcode"
-            android:textColorHint="#000000"
-            android:textColor="#000000"
+            android:textColorHint="#666666"
+            android:textColor="#333333"
             android:inputType="numberSigned"/>
 
         <EditText
@@ -25,8 +25,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Product Name"
-            android:textColorHint="#000000"
-            android:textColor="#000000"
+            android:textColorHint="#666666"
+            android:textColor="#333333"
             android:layout_marginTop="8dp"/>
 
         <EditText
@@ -34,8 +34,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="HSN Code"
-            android:textColorHint="#000000"
-            android:textColor="#000000"
+            android:textColorHint="#666666"
+            android:textColor="#333333"
             android:inputType="numberSigned"
             android:layout_marginTop="8dp"/>
 
@@ -44,8 +44,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Rate"
-            android:textColorHint="#000000"
-            android:textColor="#000000"
+            android:textColorHint="#666666"
+            android:textColor="#333333"
             android:inputType="numberDecimal"
             android:layout_marginTop="8dp"/>
 
@@ -54,8 +54,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Tax %"
-            android:textColorHint="#000000"
-            android:textColor="#000000"
+            android:textColorHint="#666666"
+            android:textColor="#333333"
             android:inputType="numberDecimal"
             android:layout_marginTop="8dp"/>
 
@@ -64,8 +64,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Gross Price"
-            android:textColorHint="#000000"
-            android:textColor="#000000"
+            android:textColorHint="#666666"
+            android:textColor="#333333"
             android:inputType="numberDecimal"
             android:layout_marginTop="8dp"/>
 
@@ -74,8 +74,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Sale Price"
-            android:textColorHint="#000000"
-            android:textColor="#000000"
+            android:textColorHint="#666666"
+            android:textColor="#333333"
             android:inputType="numberDecimal"
             android:layout_marginTop="8dp"/>
 
@@ -84,8 +84,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="MRP"
-            android:textColorHint="#000000"
-            android:textColor="#000000"
+            android:textColorHint="#666666"
+            android:textColor="#333333"
             android:inputType="numberDecimal"
             android:layout_marginTop="8dp"/>
 
@@ -94,8 +94,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Initial Stock"
-            android:textColorHint="#000000"
-            android:textColor="#000000"
+            android:textColorHint="#666666"
+            android:textColor="#333333"
             android:inputType="number"
             android:layout_marginTop="8dp"/>
 

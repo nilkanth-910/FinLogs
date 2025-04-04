@@ -24,13 +24,12 @@ class Expense : AppCompatActivity() {
     private lateinit var databaseReference: DatabaseReference
     private lateinit var addButton: com.google.android.material.floatingactionbutton.FloatingActionButton
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_expense)
 
         var topBarTitle = findViewById<TextView>(R.id.topBarTitle)
-        topBarTitle.text = topBarTitle.text.toString() + " - Expenses"
+        topBarTitle.text = "Expenses"
 
         databaseReference = FirebaseDatabase.getInstance().getReference("expenses")
         addButton = findViewById<FloatingActionButton>(R.id.btnAdd)

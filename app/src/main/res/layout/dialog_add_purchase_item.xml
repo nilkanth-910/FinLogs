@@ -16,16 +16,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Item Name"
-            android:textColorHint="#000000"
-            android:textColor="#000000"/>
+            android:textColorHint="#666666"
+            android:textColor="#333333"/>
 
         <EditText
             android:id="@+id/edtPurchaseGrossPrice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Gross Price"
-            android:textColorHint="#000000"
-            android:textColor="#000000"
+            android:textColorHint="#666666"
+            android:textColor="#333333"
             android:inputType="numberDecimal"
             android:layout_marginTop="8dp" />
 
@@ -34,8 +34,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Quantity"
-            android:textColorHint="#000000"
-            android:textColor="#000000"
+            android:textColorHint="#666666"
+            android:textColor="#333333"
             android:inputType="number"
             android:layout_marginTop="8dp" />
 

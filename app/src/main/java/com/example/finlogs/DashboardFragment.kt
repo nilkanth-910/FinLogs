@@ -20,9 +20,6 @@ import java.util.*
 
 class DashboardFragment : Fragment() {
 
-    private lateinit var tabLayout: TabLayout
-    private lateinit var latestListContainer: LinearLayout
-    private lateinit var latestListView: ListView
     private lateinit var salesReference: DatabaseReference
     private lateinit var purchasesReference: DatabaseReference
     private lateinit var expensesReference: DatabaseReference
@@ -75,10 +72,6 @@ class DashboardFragment : Fragment() {
             startActivity(Intent(requireActivity(), PurchaseReturn::class.java))
         }
 
-        tabLayout = view.findViewById(R.id.tabLayout)
-        latestListContainer = view.findViewById(R.id.latestListContainer)
-        latestListView = latestListContainer.findViewById(R.id.latestListView) // Initialize the ListView
-
         salesReference = FirebaseDatabase.getInstance().getReference("sales")
         purchasesReference = FirebaseDatabase.getInstance().getReference("purchases")
         expensesReference = FirebaseDatabase.getInstance().getReference("expenses")
@@ -86,25 +79,6 @@ class DashboardFragment : Fragment() {
         saleReturnReference = FirebaseDatabase.getInstance().getReference("salesReturn")
         purchaseReturnReference = FirebaseDatabase.getInstance().getReference("purchasesReturn")
 
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                when (tab?.position) {
-                    0 -> loadLatestSales()
-                    1 -> loadLatestPurchases()
-                    2 -> loadLatestExpenses()
-                }
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab?) {
-                // Optional
-            }
-
-            override fun onTabReselected(tab: TabLayout.Tab?) {
-                // Optional
-            }
-        })
-
-        loadLatestSales()
         calculateTotalSales()
         calculateTotalPurchases()
         calculateTotalExpenses()
@@ -235,84 +209,4 @@ class DashboardFragment : Fragment() {
         })
     }
 
-    private fun loadLatestSales() {
-        salesReference.orderByChild("date").limitToLast(5)
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val salesList = mutableListOf<SaleModel>()
-                    val reversedSnapshot = snapshot.children.reversed()
-                    for (saleSnapshot in reversedSnapshot) {
-                        val sale = saleSnapshot.getValue(SaleModel::class.java)
-                        sale?.let {
-                            salesList.add(it)
-                        }
-                    }
-                    val adapter = ArrayAdapter(
-                        requireContext(),
-                        android.R.layout.simple_list_item_1,
-                        salesList.map { "${it.customerName} | ${it.invoiceNo} | ₹${it.totalAmount}" }
-                    )
-                    latestListView.adapter = adapter
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    Log.e("Firebase", "Error loading latest sales: ${error.message}")
-                    Toast.makeText(requireContext(), "Error loading latest sales.", Toast.LENGTH_SHORT).show()
-                }
-            })
-    }
-
-    private fun loadLatestPurchases() {
-        purchasesReference.orderByChild("date").limitToLast(5)
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val purchasesList = mutableListOf<String>()
-                    val reversedSnapshot = snapshot.children.reversed()
-                    for (purchaseSnapshot in reversedSnapshot) {
-                        val purchase = purchaseSnapshot.getValue(PurchaseModel::class.java)
-                        purchase?.let {
-                            purchasesList.add("${it.supplierName} | ${it.invoiceNo} | ₹${it.totalAmount}")
-                        }
-                    }
-                    val adapter = ArrayAdapter(
-                        requireContext(),
-                        android.R.layout.simple_list_item_1,
-                        purchasesList
-                    )
-                    latestListView.adapter = adapter
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    Log.e("Firebase", "Error loading latest purchases: ${error.message}")
-                    Toast.makeText(requireContext(), "Error loading latest purchases.", Toast.LENGTH_SHORT).show()
-                }
-            })
-    }
-
-    private fun loadLatestExpenses() {
-        expensesReference.orderByChild("date").limitToLast(5)
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val expensesList = mutableListOf<String>()
-                    val reversedSnapshot = snapshot.children.reversed()
-                    for (expenseSnapshot in reversedSnapshot) {
-                        val expense = expenseSnapshot.getValue(ExpenseModel::class.java)
-                        expense?.let {
-                            expensesList.add("${it.payee} | ${it.category} | ₹${it.amount}")
-                        }
-                    }
-                    val adapter = ArrayAdapter(
-                        requireContext(),
-                        android.R.layout.simple_list_item_1,
-                        expensesList
-                    )
-                    latestListView.adapter = adapter
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    Log.e("Firebase", "Error loading latest expenses: ${error.message}")
-                    Toast.makeText(requireContext(), "Error loading latest expenses.", Toast.LENGTH_SHORT).show()
-                }
-            })
-    }
 }

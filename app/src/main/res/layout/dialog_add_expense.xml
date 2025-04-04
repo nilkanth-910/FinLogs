@@ -16,8 +16,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Expense Date"
-            android:textColorHint="#000000"
-            android:textColor="#000000"
+            android:textColorHint="#666666"
+            android:textColor="#333333"
             android:focusable="false"
             android:clickable="true" />
 
@@ -26,8 +26,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Amount"
-            android:textColorHint="#000000"
-            android:textColor="#000000"
+            android:textColorHint="#666666"
+            android:textColor="#333333"
             android:inputType="numberDecimal"
             android:layout_marginTop="8dp"/>
 
@@ -36,8 +36,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Description"
-            android:textColorHint="#000000"
-            android:textColor="#000000"
+            android:textColorHint="#666666"
+            android:textColor="#333333"
             android:inputType="textMultiLine"
             android:layout_marginTop="8dp"/>
 
@@ -46,8 +46,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Category"
-            android:textColorHint="#000000"
-            android:textColor="#000000"
+            android:textColorHint="#666666"
+            android:textColor="#333333"
             android:inputType="text"
             android:layout_marginTop="8dp"/>
 
@@ -56,8 +56,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Payee"
-            android:textColorHint="#000000"
-            android:textColor="#000000"
+            android:textColorHint="#666666"
+            android:textColor="#333333"
             android:inputType="text"
             android:layout_marginTop="8dp"/>
 

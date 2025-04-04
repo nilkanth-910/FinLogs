@@ -15,9 +15,9 @@
             android:id="@+id/edtSaleDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Sale Date"
-            android:textColorHint="#000000"
-            android:textColor="#000000"
+            android:hint="Date"
+            android:textColorHint="#666666"
+            android:textColor="#333333"
             android:focusable="false"
             android:clickable="true" />
 
@@ -26,8 +26,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Customer Name"
-            android:textColorHint="#000000"
-            android:textColor="#000000"
+            android:textColorHint="#666666"
+            android:textColor="#333333"
             android:layout_marginTop="8dp"/>
 
         <Button
@@ -52,7 +52,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Total: ₹0.00"
-            android:textColor="#000000"
+            android:textColor="#333333"
             android:textStyle="bold"
             android:textSize="16sp"
             android:layout_marginTop="8dp"/>
@@ -61,7 +61,7 @@
             android:id="@+id/btnSaveSale"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Save Sale"
+            android:text="Save"
             android:backgroundTint="#A5D1D1"
             android:textColor="#333333"
             android:layout_marginTop="8dp"/>

@@ -34,6 +34,7 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+
 }
 
 dependencies {
@@ -47,6 +48,7 @@ dependencies {
     implementation("androidx.cardview:cardview:1.0.0")
     implementation(platform("com.google.firebase:firebase-bom:32.8.0")) // Or the latest version
     implementation("com.google.firebase:firebase-database-ktx")
+    implementation ("com.google.firebase:firebase-auth:21.1.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3") // Or the latest version
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

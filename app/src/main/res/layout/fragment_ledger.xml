@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="2dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:completionThreshold="1"
@@ -37,12 +37,35 @@
     <ListView
         android:id="@+id/listViewInwards"
         android:layout_width="wrap_content"
-        android:layout_height="190dp"
+        android:layout_height="130dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="23dp"
         android:textColor="@color/green"
         />
+
+    <TextView
+        android:id="@+id/ttlInwards"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:textColor="@color/black"
+        android:text="Inwards Total : "
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:textColor="@color/black"
+        android:text="----------------------------------------------"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/textView4"
@@ -59,10 +82,24 @@
     <ListView
         android:id="@+id/listViewOutwards"
         android:layout_width="wrap_content"
-        android:layout_height="190dp"
+        android:layout_height="130dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="129dp"
-        android:textColor="@color/black"/>
+        android:layout_marginBottom="23dp"
+        android:textColor="@color/green"
+        />
+
+    <TextView
+        android:id="@+id/ttlOutwards"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:textColor="@color/black"
+        android:text="Outwards Total : "
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
 
 </LinearLayout>

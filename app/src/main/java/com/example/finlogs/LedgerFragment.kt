@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment
 import android.widget.ListView
 import android.widget.TextView
 import com.google.firebase.database.*
-import kotlin.toString
 
 class LedgerFragment : Fragment() {
 
@@ -22,7 +21,8 @@ class LedgerFragment : Fragment() {
     private lateinit var itemAdapter: ArrayAdapter<String>
     private lateinit var listOutwardsView: ListView
     private lateinit var listInwardsView: ListView
-
+    private lateinit var ttlInwards: TextView
+    private lateinit var ttlOutwards: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,11 +32,13 @@ class LedgerFragment : Fragment() {
 
 
         val topBarTitle = view.findViewById<TextView>(R.id.topBarTitle)
-        topBarTitle.text = topBarTitle.text.toString() + " - Ledger"
+        topBarTitle.text = topBarTitle.text.toString()
 
         autoCompleteItem = view.findViewById(R.id.autoCompleteItem)
         listOutwardsView = view.findViewById(R.id.listViewOutwards)
         listInwardsView = view.findViewById(R.id.listViewInwards)
+        ttlInwards = view.findViewById(R.id.ttlInwards)
+        ttlOutwards = view.findViewById(R.id.ttlOutwards)
 
         saleDatabaseReference = FirebaseDatabase.getInstance().getReference("sales")
         purchaseDatabaseReference = FirebaseDatabase.getInstance().getReference("purchases")
@@ -49,7 +51,6 @@ class LedgerFragment : Fragment() {
             val selectedItem = parent.getItemAtPosition(position) as String
             loadProductData(selectedItem)
         }
-
         return view
     }
 
@@ -76,64 +77,52 @@ class LedgerFragment : Fragment() {
     }
 
     private fun loadProductData(productName: String) {
+        // Fetch purchases (inwards) data
+        var ttlInward = 0.0
+        var ttlOutward = 0.0
         purchaseDatabaseReference.orderByChild("date").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val tempList = mutableListOf<PurchaseModel>()
+                val inwardsData = mutableListOf<String>()
                 for (purchaseSnapshot in snapshot.children) {
                     val purchase = purchaseSnapshot.getValue(PurchaseModel::class.java)
-                    purchase?.let { tempList.add(it) }
-                }
-                for (purchase in tempList) {
-                    purchase.items?.let { items ->
-                        for (item in items) {
-                            if (item.itemName == productName) {
-                                Log.d("LedgerFragment", "Data for $item")
-                                val adapter = ArrayAdapter(
-                                    requireContext(), // Corrected context
-                                    android.R.layout.simple_list_item_1,
-                                    listOf(
-                                        "${purchase.invoiceNo} | ${purchase.date} | ${item.qty} | ₹${String.format("%.2f",item.amount)}"
-                                    ) // Corrected list creation
-                                )
-                                listInwardsView.adapter = adapter
-                                break
-                            }
+                    purchase?.items?.forEach { item ->
+                        if (item.itemName == productName) {
+                            inwardsData.add("${purchase.invoiceNo} | ${purchase.date} | ${item.qty} | ₹${String.format("%.0f", item.amount)}")
+                            ttlInward += item.qty
                         }
                     }
-                    Log.d("LedgerFragment", "Failed to load outwards data: ${purchase.items}")
                 }
+                val inwardsAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, inwardsData)
+                listInwardsView.adapter = inwardsAdapter
+                ttlInwards.text = "Total Inwards: ${String.format("%.2f", ttlInward)}"
+
             }
-            override fun onCancelled(error: DatabaseError) {}
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("LedgerFragment", "Failed to load inwards data: ${error.message}")
+            }
         })
 
+        // Fetch sales (outwards) data
         saleDatabaseReference.orderByChild("date").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val tempList = mutableListOf<SaleModel>()
+                val outwardsData = mutableListOf<String>()
                 for (saleSnapshot in snapshot.children) {
                     val sale = saleSnapshot.getValue(SaleModel::class.java)
-                    sale?.let { tempList.add(it) }
-                }
-                for (sale in tempList) {
-                    sale.saleItems?.let { items ->
-                        for (item in items) {
-                            if (item.productName == productName) {
-                                Log.d("LedgerFragment", "Data for $item")
-                                val adapter = ArrayAdapter(
-                                    requireContext(), // Corrected context
-                                    android.R.layout.simple_list_item_1,
-                                    listOf(
-                                        "${sale.invoiceNo} | ${sale.date} | ${item.qty} | ₹${String.format("%.2f",item.amount)}"
-                                    ) // Corrected list creation
-                                )
-                                listOutwardsView.adapter = adapter
-                                break
-                            }
+                    sale?.saleItems?.forEach { item ->
+                        if (item.productName == productName) {
+                            outwardsData.add("${sale.invoiceNo} | ${sale.date} | ${item.qty} | ₹${String.format("%.2f", item.amount)}")
+                            ttlOutward += item.qty
                         }
                     }
-                    Log.d("LedgerFragment", "Failed to load outwards data: ${sale.saleItems}")
                 }
+                val outwardsAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, outwardsData)
+                listOutwardsView.adapter = outwardsAdapter
+                ttlOutwards.text = "Total Outwards: ${String.format("%.2f", ttlOutward)}"
             }
-            override fun onCancelled(error: DatabaseError) {}
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("LedgerFragment", "Failed to load outwards data: ${error.message}")
+            }
         })
     }
 }

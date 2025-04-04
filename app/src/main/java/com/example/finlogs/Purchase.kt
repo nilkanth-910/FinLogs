@@ -29,7 +29,7 @@ class Purchase : AppCompatActivity() {
         setContentView(R.layout.activity_purchase)
         var topBarTitle = findViewById<TextView>(R.id.topBarTitle)
 
-        topBarTitle.text = topBarTitle.text.toString() + " - Purchase"
+        topBarTitle.text = "Purchase"
 
         btnAddPurchase = findViewById(R.id.btnAdd)
         purchaseContainer = findViewById(R.id.container)

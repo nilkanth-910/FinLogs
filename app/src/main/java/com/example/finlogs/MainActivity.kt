@@ -1,9 +1,9 @@
 package com.example.finlogs
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
 
@@ -11,34 +11,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val bottomNavigationView: BottomNavigationView = findViewById(R.id.bottom_navigation)
-        bottomNavigationView.setOnNavigationItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.nav_ledger -> {
-                    loadFragment(LedgerFragment())
-                    true
-                }
-                R.id.nav_dashboard -> {
-                    loadFragment(DashboardFragment())
-                    true
-                }
-                R.id.nav_setting -> {
-                    loadFragment(SettingFragment())
-                    true
-                }
-                else -> false
-            }
+        val loginButton = findViewById<Button>(R.id.loginButton)
+        val registerButton = findViewById<Button>(R.id.registerButton)
+
+        loginButton.setOnClickListener {
+            startActivity(Intent(this, LoginActivity::class.java))
         }
 
-        if (savedInstanceState == null) {
-            loadFragment(DashboardFragment())
-            bottomNavigationView.menu.findItem(R.id.nav_dashboard).setChecked(true)
+        registerButton.setOnClickListener {
+            startActivity(Intent(this, RegisterActivity::class.java))
         }
-    }
-
-    private fun loadFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, fragment)
-            .commit()
     }
 }

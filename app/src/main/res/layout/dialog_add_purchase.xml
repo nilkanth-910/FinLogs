@@ -15,9 +15,9 @@
             android:id="@+id/edtPurchaseDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Purchase Date"
-            android:textColorHint="#000000"
-            android:textColor="#000000"
+            android:hint="Date"
+            android:textColorHint="#666666"
+            android:textColor="#333333"
             android:focusable="false"
             android:clickable="true" />
 
@@ -26,8 +26,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Supplier Name"
-            android:textColorHint="#000000"
-            android:textColor="#000000"
+            android:textColorHint="#666666"
+            android:textColor="#333333"
             android:layout_marginTop="8dp" />
 
         <EditText
@@ -35,8 +35,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Invoice No"
-            android:textColorHint="#000000"
-            android:textColor="#000000"
+            android:textColorHint="#666666"
+            android:textColor="#333333"
             android:layout_marginTop="8dp" />
 
         <Button
@@ -61,7 +61,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Total: ₹0.0"
-            android:textColor="#000000"
+            android:textColor="#333333"
             android:textStyle="bold"
             android:textSize="16sp"
             android:layout_marginTop="8dp" />
@@ -70,7 +70,7 @@
             android:id="@+id/btnSavePurchase"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Save Purchase"
+            android:text="Save"
             android:backgroundTint="#D1C2E0"
             android:textColor="#333333"
             android:layout_marginTop="8dp" />
