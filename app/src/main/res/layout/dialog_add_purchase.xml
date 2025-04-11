@@ -11,6 +11,18 @@
         android:padding="16dp"
         android:background="@drawable/dialog_rounded_background">
 
+        <TextView
+            android:id="@+id/edtPurchaseTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="16dp"
+            android:text="Add Purchase"
+            android:gravity="center"
+            android:textColor="#333333"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
         <EditText
             android:id="@+id/edtPurchaseDate"
             android:layout_width="match_parent"
@@ -74,5 +86,15 @@
             android:backgroundTint="#D1C2E0"
             android:textColor="#333333"
             android:layout_marginTop="8dp" />
+
+        <Button
+            android:id="@+id/btnCancelPurchase"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:backgroundTint="#D18383"
+            android:textColor="#333333"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"/>
     </LinearLayout>
 </ScrollView>

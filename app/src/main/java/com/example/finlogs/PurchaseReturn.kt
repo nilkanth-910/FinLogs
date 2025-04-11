@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +14,10 @@ import com.google.firebase.database.*
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import kotlin.text.format
+import kotlin.text.get
+import kotlin.text.set
+import kotlin.toString
 
 class PurchaseReturn : AppCompatActivity() {
 
@@ -117,6 +122,10 @@ class PurchaseReturn : AppCompatActivity() {
             showDeleteConfirmationDialog(purchaseReturn.purchaseReturnId)
         }
 
+        cardView.setOnClickListener {
+            showPurchaseReturnDialog(purchaseReturn)
+        }
+
         purchaseReturnContainer.addView(cardView)
     }
 
@@ -183,6 +192,7 @@ class PurchaseReturn : AppCompatActivity() {
         val dialog = Dialog(this)
         dialog.setContentView(R.layout.dialog_add_purchase)
 
+        val dialogTitle = dialog.findViewById<TextView>(R.id.edtPurchaseTitle)
         val edtDate = dialog.findViewById<EditText>(R.id.edtPurchaseDate)
         val edtSupplierName = dialog.findViewById<EditText>(R.id.edtSupplierName)
         val edtInvoiceNo = dialog.findViewById<EditText>(R.id.edtInvoiceNo)
@@ -190,6 +200,9 @@ class PurchaseReturn : AppCompatActivity() {
         val btnSavePurchaseReturn = dialog.findViewById<Button>(R.id.btnSavePurchase)
         val txtTotalAmount = dialog.findViewById<TextView>(R.id.txtTotalAmount)
         val listViewPurchaseReturnItems = dialog.findViewById<ListView>(R.id.listViewPurchaseItems)
+        val btnCancel = dialog.findViewById<Button>(R.id.btnCancelPurchase)
+
+        dialogTitle.text = "Add Purchase Return"
 
         val calendar = Calendar.getInstance()
         edtDate.setOnClickListener {
@@ -238,6 +251,10 @@ class PurchaseReturn : AppCompatActivity() {
                 }
         }
 
+        btnCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+
         dialog.show()
     }
 
@@ -270,6 +287,7 @@ class PurchaseReturn : AppCompatActivity() {
         val edtGrossPrice = dialog.findViewById<EditText>(R.id.edtPurchaseGrossPrice)
         val edtQty = dialog.findViewById<EditText>(R.id.edtPurchaseQty)
         val btnAddToPurchaseReturn = dialog.findViewById<Button>(R.id.btnAddToPurchase)
+
 
         edtItemName.setAdapter(itemAdapter)
         edtItemName.threshold = 1
@@ -313,6 +331,144 @@ class PurchaseReturn : AppCompatActivity() {
         dialog.show()
     }
 
+    private fun showPurchaseReturnDialog(purchaseReturn: PurchaseReturnModel) {
+        val dialog = Dialog(this)
+        dialog.setContentView(R.layout.dialog_add_purchase)
 
+        val dialogTitle = dialog.findViewById<TextView>(R.id.edtPurchaseTitle)
+        val edtDate = dialog.findViewById<EditText>(R.id.edtPurchaseDate)
+        val edtSupplierName = dialog.findViewById<EditText>(R.id.edtSupplierName)
+        val edtInvoiceNo = dialog.findViewById<EditText>(R.id.edtInvoiceNo)
+        val listViewPurchaseItems = dialog.findViewById<ListView>(R.id.listViewPurchaseItems)
+        val txtTotalAmount = dialog.findViewById<TextView>(R.id.txtTotalAmount)
+        val btnSavePurchase = dialog.findViewById<Button>(R.id.btnSavePurchase)
+        val btnCancel = dialog.findViewById<Button>(R.id.btnCancelPurchase)
+        val btnAddPurchaseItem = dialog.findViewById<Button>(R.id.btnAddPurchaseItem)
+
+        dialogTitle.text = "Purchase Return Details"
+        edtDate.setText(purchaseReturn.date)
+        edtSupplierName.setText(purchaseReturn.supplierName)
+        edtInvoiceNo.setText(purchaseReturn.returninvoiceNo)
+        txtTotalAmount.text = "Total: ₹${purchaseReturn.totalAmount}"
+
+        // Disable editing for all fields
+        edtDate.isEnabled = false
+        edtSupplierName.isEnabled = false
+        edtInvoiceNo.isEnabled = false
+
+        // Populate purchase return items in the list
+        val adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_list_item_1,
+            purchaseReturn.purchaseReturnItems.map { "${it.itemName} - ₹${String.format("%.2f", it.amount)}" }
+        )
+        listViewPurchaseItems.adapter = adapter
+
+        btnAddPurchaseItem.visibility = View.GONE
+
+        btnSavePurchase.text = "Edit"
+        btnCancel.text = "Close"
+
+        btnSavePurchase.setOnClickListener {
+            updatePurchaseReturn(purchaseReturn)
+            dialog.dismiss()
+        }
+
+        btnCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
+    private fun updatePurchaseReturn(purchaseReturn: PurchaseReturnModel) {
+        val dialog = Dialog(this)
+        dialog.setContentView(R.layout.dialog_add_purchase)
+
+        val dialogTitle = dialog.findViewById<TextView>(R.id.edtPurchaseTitle)
+        val edtDate = dialog.findViewById<EditText>(R.id.edtPurchaseDate)
+        val edtSupplierName = dialog.findViewById<EditText>(R.id.edtSupplierName)
+        val edtInvoiceNo = dialog.findViewById<EditText>(R.id.edtInvoiceNo)
+        val btnAddPurchaseItem = dialog.findViewById<Button>(R.id.btnAddPurchaseItem)
+        val btnSavePurchase = dialog.findViewById<Button>(R.id.btnSavePurchase)
+        val txtTotalAmount = dialog.findViewById<TextView>(R.id.txtTotalAmount)
+        val listViewPurchaseItems = dialog.findViewById<ListView>(R.id.listViewPurchaseItems)
+        val btnCancel = dialog.findViewById<Button>(R.id.btnCancelPurchase)
+
+        dialogTitle.text = "Edit Purchase Return"
+
+        val calendar = Calendar.getInstance()
+        val purchaseReturnItems = purchaseReturn.purchaseReturnItems.toMutableList()
+
+        // Populate fields with purchase return details
+        edtDate.setText(purchaseReturn.date)
+        edtSupplierName.setText(purchaseReturn.supplierName)
+        edtInvoiceNo.setText(purchaseReturn.returninvoiceNo)
+        txtTotalAmount.text = "Total: ₹${purchaseReturn.totalAmount}"
+
+        // Enable DatePicker for date field
+        edtDate.setOnClickListener {
+            val datePicker = DatePickerDialog(
+                this,
+                { _, year, month, dayOfMonth ->
+                    calendar.set(year, month, dayOfMonth)
+                    val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                    edtDate.setText(sdf.format(calendar.time))
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+            )
+            datePicker.show()
+        }
+
+        // Populate purchase return items in the list
+        val adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_list_item_1,
+            purchaseReturnItems.map { "${it.itemName} - ₹${String.format("%.2f", it.amount)}" }
+        )
+        listViewPurchaseItems.adapter = adapter
+
+        btnAddPurchaseItem.setOnClickListener {
+            showAddPurchaseReturnItemDialog(purchaseReturnItems, listViewPurchaseItems, txtTotalAmount)
+        }
+
+        btnSavePurchase.setOnClickListener {
+            val updatedDate = edtDate.text.toString()
+            val updatedSupplierName = edtSupplierName.text.toString()
+            val updatedInvoiceNo = edtInvoiceNo.text.toString()
+            val updatedTotalAmount = purchaseReturnItems.sumOf { it.amount }
+
+            if (updatedDate.isEmpty() || updatedSupplierName.isEmpty() || updatedInvoiceNo.isEmpty()) {
+                Toast.makeText(this, "Fill all fields!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val updatedPurchaseReturn = PurchaseReturnModel(
+                purchaseReturnId = purchaseReturn.purchaseReturnId,
+                date = updatedDate,
+                supplierName = updatedSupplierName,
+                returninvoiceNo = updatedInvoiceNo,
+                totalAmount = updatedTotalAmount,
+                purchaseReturnItems = purchaseReturnItems
+            )
+
+            databaseReference.child(purchaseReturn.purchaseReturnId).setValue(updatedPurchaseReturn)
+                .addOnSuccessListener {
+                    Toast.makeText(this, "Purchase Return updated successfully!", Toast.LENGTH_SHORT).show()
+                    dialog.dismiss()
+                }
+                .addOnFailureListener {
+                    Toast.makeText(this, "Failed to update Purchase Return!", Toast.LENGTH_SHORT).show()
+                }
+        }
+
+        btnCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
 
 }

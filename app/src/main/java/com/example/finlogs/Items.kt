@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -58,6 +59,7 @@ class Items : AppCompatActivity() {
         val edtMRP = view.findViewById<EditText>(R.id.edtMRP)
         val edtStock = view.findViewById<EditText>(R.id.edtStock)
         val btnSave = view.findViewById<Button>(R.id.btnSaveItem)
+        val btnCancel = view.findViewById<Button>(R.id.btnCancelItem)
 
         val textWatcher = object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
@@ -101,6 +103,9 @@ class Items : AppCompatActivity() {
             }
         }
 
+        btnCancel.setOnClickListener {
+            dialog.dismiss()
+        }
         dialog.show()
     }
 
@@ -131,7 +136,6 @@ class Items : AppCompatActivity() {
         val productSalePriceTextView = cardView.findViewById<TextView>(R.id.amtTextView)
         val productMRPTextView = cardView.findViewById<TextView>(R.id.dateTextView)
         val stockTextView = cardView.findViewById<TextView>(R.id.cstTextView)
-
         val deleteProductIcon = cardView.findViewById<ImageView>(R.id.deleteIcon)
 
         itemNameTextView.text = "${product.productName}"
@@ -139,6 +143,9 @@ class Items : AppCompatActivity() {
         productMRPTextView.text = "MRP: ₹${product.mrp}"
         stockTextView.text = "Stock: ${product.stock}"
 
+        cardView.setOnClickListener {
+            showItemDialog(product)
+        }
 
         deleteProductIcon.setOnClickListener {
             showDeleteConfirmationDialog(product)
@@ -165,6 +172,114 @@ class Items : AppCompatActivity() {
             .addOnFailureListener {
                 Toast.makeText(this, "Failed to delete product!", Toast.LENGTH_SHORT).show()
             }
+    }
+
+    private fun showItemDialog(item: Product) {
+        val dialog = Dialog(this)
+        dialog.setContentView(R.layout.dialog_add_item)
+
+        val dialogTitle = dialog.findViewById<TextView>(R.id.edtItemTitle)
+        val edtBarcode = dialog.findViewById<EditText>(R.id.edtBarcode)
+        val edtProductName = dialog.findViewById<EditText>(R.id.edtProductName)
+        val edtHSN = dialog.findViewById<EditText>(R.id.edtHSN)
+        val edtRate = dialog.findViewById<EditText>(R.id.edtRate)
+        val edtTax = dialog.findViewById<EditText>(R.id.edtTax)
+        val edtGrossPrice = dialog.findViewById<EditText>(R.id.edtGrossPrice)
+        val edtSalePrice = dialog.findViewById<EditText>(R.id.edtSalePrice)
+        val edtMRP = dialog.findViewById<EditText>(R.id.edtMRP)
+        val edtStock = dialog.findViewById<EditText>(R.id.edtStock)
+        val btnSaveItem = dialog.findViewById<Button>(R.id.btnSaveItem)
+        val btnCancel = dialog.findViewById<Button>(R.id.btnCancelItem)
+
+        dialogTitle.text = "Item Details"
+        edtBarcode.setText(item.barcode)
+        edtProductName.setText(item.productName)
+        edtHSN.setText(item.hsn)
+        edtRate.setText(item.rate.toString())
+        edtTax.setText(item.tax.toString())
+        edtGrossPrice.setText(item.grossPrice.toString())
+        edtSalePrice.setText(item.salePrice.toString())
+        edtMRP.setText(item.mrp.toString())
+        edtStock.setText(item.stock.toString())
+
+        // Disable editing for all fields
+        edtBarcode.isEnabled = false
+        edtProductName.isEnabled = false
+        edtHSN.isEnabled = false
+        edtRate.isEnabled = false
+        edtTax.isEnabled = false
+        edtGrossPrice.isEnabled = false
+        edtSalePrice.isEnabled = false
+        edtMRP.isEnabled = false
+        edtStock.isEnabled = false
+
+        btnSaveItem.text = "Edit"
+        btnCancel.text = "Close"
+
+        btnSaveItem.setOnClickListener {
+            updateItem(item)
+            dialog.dismiss()
+        }
+
+        btnCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
+    private fun updateItem(item: Product) {
+        val dialog = Dialog(this)
+        dialog.setContentView(R.layout.dialog_add_item)
+
+        val dialogTitle = dialog.findViewById<TextView>(R.id.edtItemTitle)
+        val edtBarcode = dialog.findViewById<EditText>(R.id.edtBarcode)
+        val edtProductName = dialog.findViewById<EditText>(R.id.edtProductName)
+        val edtHSN = dialog.findViewById<EditText>(R.id.edtHSN)
+        val edtRate = dialog.findViewById<EditText>(R.id.edtRate)
+        val edtTax = dialog.findViewById<EditText>(R.id.edtTax)
+        val edtGrossPrice = dialog.findViewById<EditText>(R.id.edtGrossPrice)
+        val edtSalePrice = dialog.findViewById<EditText>(R.id.edtSalePrice)
+        val edtMRP = dialog.findViewById<EditText>(R.id.edtMRP)
+        val edtStock = dialog.findViewById<EditText>(R.id.edtStock)
+        val btnSaveItem = dialog.findViewById<Button>(R.id.btnSaveItem)
+
+        dialogTitle.text = "Update Item"
+        edtBarcode.setText(item.barcode)
+        edtProductName.setText(item.productName)
+        edtHSN.setText(item.hsn)
+        edtRate.setText(item.rate.toString())
+        edtTax.setText(item.tax.toString())
+        edtGrossPrice.setText(item.grossPrice.toString())
+        edtSalePrice.setText(item.salePrice.toString())
+        edtMRP.setText(item.mrp.toString())
+        edtStock.setText(item.stock.toString())
+
+        btnSaveItem.setOnClickListener {
+            val updatedItem = Product(
+                productId = item.productId,
+                barcode = edtBarcode.text.toString(),
+                productName = edtProductName.text.toString(),
+                hsn = edtHSN.text.toString(),
+                rate = edtRate.text.toString().toDoubleOrNull() ?: 0.0,
+                tax = edtTax.text.toString().toDoubleOrNull() ?: 0.0,
+                grossPrice = edtGrossPrice.text.toString().toDoubleOrNull() ?: 0.0,
+                salePrice = edtSalePrice.text.toString().toDoubleOrNull() ?: 0.0,
+                mrp = edtMRP.text.toString().toDoubleOrNull() ?: 0.0,
+                stock = edtStock.text.toString().toIntOrNull() ?: 0
+            )
+
+            database.child(item.productId).setValue(updatedItem)
+                .addOnSuccessListener {
+                    Toast.makeText(this, "Item updated successfully!", Toast.LENGTH_SHORT).show()
+                    dialog.dismiss()
+                }
+                .addOnFailureListener {
+                    Toast.makeText(this, "Failed to update item!", Toast.LENGTH_SHORT).show()
+                }
+        }
+
+        dialog.show()
     }
 
 }

@@ -9,9 +9,11 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.*
 import android.app.DatePickerDialog
+import android.view.View
 import androidx.appcompat.app.AlertDialog
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.text.format
 
 class SaleReturn : AppCompatActivity() {
 
@@ -111,6 +113,10 @@ class SaleReturn : AppCompatActivity() {
             showDeleteConfirmationDialog(saleReturn)
         }
 
+        cardView.setOnClickListener {
+            showSaleReturnDialog(saleReturn)
+        }
+
         salesReturnContainer.addView(cardView)
     }
 
@@ -172,15 +178,19 @@ class SaleReturn : AppCompatActivity() {
         val dialog = Dialog(this)
         dialog.setContentView(R.layout.dialog_add_sale)
 
+        val dialogTitle = dialog.findViewById<TextView>(R.id.edtSaleTitle)
         val edtDate = dialog.findViewById<EditText>(R.id.edtSaleDate)
         val edtCustomerName = dialog.findViewById<EditText>(R.id.edtCustomerName)
         val btnAddSaleReturnItem = dialog.findViewById<Button>(R.id.btnAddSaleItem)
         val btnSaveSaleReturn = dialog.findViewById<Button>(R.id.btnSaveSale)
         val txtTotalAmount = dialog.findViewById<TextView>(R.id.txtTotalAmount)
         val listViewSaleReturnItems = dialog.findViewById<ListView>(R.id.listViewSaleItems)
+        val btnCancel = dialog.findViewById<Button>(R.id.btnCancelSale)
 
         val calendar = Calendar.getInstance()
 
+
+        dialogTitle.text = "Add Sale Return"
         // Disable manual input and open DatePicker on click
         edtDate.setOnClickListener {
             val datePicker = DatePickerDialog(
@@ -229,6 +239,10 @@ class SaleReturn : AppCompatActivity() {
                         Toast.makeText(this, "Failed to Add SaleReturn!", Toast.LENGTH_SHORT).show()
                     }
             }
+        }
+
+        btnCancel.setOnClickListener {
+            dialog.dismiss()
         }
 
         dialog.show()
@@ -350,4 +364,136 @@ class SaleReturn : AppCompatActivity() {
         }
     }
 
+
+    private fun showSaleReturnDialog(saleReturn: SaleReturnModel) {
+        val dialog = Dialog(this)
+        dialog.setContentView(R.layout.dialog_add_sale)
+
+        val dialogTitle = dialog.findViewById<TextView>(R.id.edtSaleTitle)
+        val edtDate = dialog.findViewById<EditText>(R.id.edtSaleDate)
+        val edtCustomerName = dialog.findViewById<EditText>(R.id.edtCustomerName)
+        val listViewSaleItems = dialog.findViewById<ListView>(R.id.listViewSaleItems)
+        val txtTotalAmount = dialog.findViewById<TextView>(R.id.txtTotalAmount)
+        val btnSaveSale = dialog.findViewById<Button>(R.id.btnSaveSale)
+        val btnCancel = dialog.findViewById<Button>(R.id.btnCancelSale)
+        val btnAddSaleItem = dialog.findViewById<Button>(R.id.btnAddSaleItem)
+
+        dialogTitle.text = "Sale Return Details"
+        edtDate.setText(saleReturn.date)
+        edtCustomerName.setText(saleReturn.customerName)
+        txtTotalAmount.text = "Total: ₹${saleReturn.totalAmount}"
+
+        // Disable editing for all fields
+        edtDate.isEnabled = false
+        edtCustomerName.isEnabled = false
+
+        // Populate sale return items in the list
+        val adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_list_item_1,
+            saleReturn.saleReturnItems.map { "${it.productName} - ₹${String.format("%.2f", it.amount)}" }
+        )
+        listViewSaleItems.adapter = adapter
+
+        btnAddSaleItem.visibility = View.GONE
+
+        btnSaveSale.text = "Edit"
+        btnCancel.text = "Close"
+
+        btnSaveSale.setOnClickListener {
+            updateSaleReturn(saleReturn)
+            dialog.dismiss()
+        }
+
+        btnCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
+    private fun updateSaleReturn(saleReturn: SaleReturnModel) {
+        val dialog = Dialog(this)
+        dialog.setContentView(R.layout.dialog_add_sale)
+
+        val dialogTitle = dialog.findViewById<TextView>(R.id.edtSaleTitle)
+        val edtDate = dialog.findViewById<EditText>(R.id.edtSaleDate)
+        val edtCustomerName = dialog.findViewById<EditText>(R.id.edtCustomerName)
+        val btnAddSaleItem = dialog.findViewById<Button>(R.id.btnAddSaleItem)
+        val btnSaveSale = dialog.findViewById<Button>(R.id.btnSaveSale)
+        val txtTotalAmount = dialog.findViewById<TextView>(R.id.txtTotalAmount)
+        val listViewSaleItems = dialog.findViewById<ListView>(R.id.listViewSaleItems)
+        val btnCancel = dialog.findViewById<Button>(R.id.btnCancelSale)
+
+        val calendar = Calendar.getInstance()
+        val saleReturnItems = saleReturn.saleReturnItems.toMutableList()
+
+        dialogTitle.text = "Edit Sale Return"
+        edtDate.setText(saleReturn.date)
+        edtCustomerName.setText(saleReturn.customerName)
+        txtTotalAmount.text = "Total: ₹${saleReturn.totalAmount}"
+
+        // Enable DatePicker for date field
+        edtDate.setOnClickListener {
+            val datePicker = DatePickerDialog(
+                this,
+                { _, year, month, dayOfMonth ->
+                    calendar.set(year, month, dayOfMonth)
+                    val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                    edtDate.setText(sdf.format(calendar.time))
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+            )
+            datePicker.show()
+        }
+
+        // Populate sale return items in the list
+        val adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_list_item_1,
+            saleReturnItems.map { "${it.productName} - ₹${String.format("%.2f", it.amount)}" }
+        )
+        listViewSaleItems.adapter = adapter
+
+        btnAddSaleItem.setOnClickListener {
+            showAddSaleReturnItemDialog(saleReturnItems, listViewSaleItems, txtTotalAmount)
+        }
+
+        btnSaveSale.setOnClickListener {
+            val updatedDate = edtDate.text.toString()
+            val updatedCustomerName = edtCustomerName.text.toString()
+            val updatedTotalAmount = saleReturnItems.sumOf { it.amount }
+
+            if (updatedDate.isEmpty() || updatedCustomerName.isEmpty()) {
+                Toast.makeText(this, "Fill all fields!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val updatedSaleReturn = SaleReturnModel(
+                saleReturnId = saleReturn.saleReturnId,
+                date = updatedDate,
+                customerName = updatedCustomerName,
+                returnInvoiceNo = saleReturn.returnInvoiceNo,
+                totalAmount = updatedTotalAmount,
+                saleReturnItems = saleReturnItems
+            )
+
+            databaseReference.child(saleReturn.saleReturnId).setValue(updatedSaleReturn)
+                .addOnSuccessListener {
+                    Toast.makeText(this, "Sale Return updated successfully!", Toast.LENGTH_SHORT).show()
+                    dialog.dismiss()
+                }
+                .addOnFailureListener {
+                    Toast.makeText(this, "Failed to update Sale Return!", Toast.LENGTH_SHORT).show()
+                }
+        }
+
+        btnCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
 }

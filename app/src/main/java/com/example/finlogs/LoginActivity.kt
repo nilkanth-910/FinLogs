@@ -1,6 +1,8 @@
 package com.example.finlogs
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -49,9 +51,19 @@ class LoginActivity : AppCompatActivity() {
                 if (snapshot.exists()) {
                     val storedPassword = snapshot.child("password").value.toString()
                     if (storedPassword == password) {
+
+                        // ---- START: Add this code ----
+                        // Save login state
+                        val loginPrefs: SharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+                        val editor = loginPrefs.edit()
+                        editor.putBoolean("isLoggedIn", true)
+                        editor.putString("loginId", username) // Optionally store username
+                        editor.apply()
+                        // ---- END: Add this code ----
+
                         Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show()
                         startActivity(Intent(this, HomeActivity::class.java))
-                        finish()
+                        finish() // Finish LoginActivity
                     } else {
                         Toast.makeText(this, "Incorrect password", Toast.LENGTH_SHORT).show()
                     }

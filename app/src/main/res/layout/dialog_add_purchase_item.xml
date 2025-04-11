@@ -5,15 +5,16 @@
     android:fillViewport="true">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp"
+        android:gravity="center"
         android:background="@drawable/dialog_rounded_background">
 
         <AutoCompleteTextView
             android:id="@+id/edtPurchaseItemName"
-            android:layout_width="match_parent"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:hint="Item Name"
             android:textColorHint="#666666"
@@ -21,7 +22,7 @@
 
         <EditText
             android:id="@+id/edtPurchaseGrossPrice"
-            android:layout_width="match_parent"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:hint="Gross Price"
             android:textColorHint="#666666"
@@ -31,7 +32,7 @@
 
         <EditText
             android:id="@+id/edtPurchaseQty"
-            android:layout_width="match_parent"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:hint="Quantity"
             android:textColorHint="#666666"
@@ -41,9 +42,9 @@
 
         <Button
             android:id="@+id/btnAddToPurchase"
-            android:layout_width="match_parent"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:text="Add to Purchase"
+            android:text="Add Item"
             android:backgroundTint="#D1C2E0"
             android:textColor="#333333"
             android:layout_marginTop="16dp" />

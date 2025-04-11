@@ -5,15 +5,28 @@
     android:fillViewport="true">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="350dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp"
+        android:layout_gravity="center"
+        android:gravity="center"
         android:background="@drawable/dialog_rounded_background">
+
+        <TextView
+            android:id="@+id/edtItemTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="16dp"
+            android:text="Add Item"
+            android:textColor="#333333"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/edtBarcode"
-            android:layout_width="match_parent"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:hint="Barcode"
             android:textColorHint="#666666"
@@ -22,7 +35,7 @@
 
         <EditText
             android:id="@+id/edtProductName"
-            android:layout_width="match_parent"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:hint="Product Name"
             android:textColorHint="#666666"
@@ -31,7 +44,7 @@
 
         <EditText
             android:id="@+id/edtHSN"
-            android:layout_width="match_parent"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:hint="HSN Code"
             android:textColorHint="#666666"
@@ -41,7 +54,7 @@
 
         <EditText
             android:id="@+id/edtRate"
-            android:layout_width="match_parent"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:hint="Rate"
             android:textColorHint="#666666"
@@ -51,7 +64,7 @@
 
         <EditText
             android:id="@+id/edtTax"
-            android:layout_width="match_parent"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:hint="Tax %"
             android:textColorHint="#666666"
@@ -61,7 +74,7 @@
 
         <EditText
             android:id="@+id/edtGrossPrice"
-            android:layout_width="match_parent"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:hint="Gross Price"
             android:textColorHint="#666666"
@@ -71,7 +84,7 @@
 
         <EditText
             android:id="@+id/edtSalePrice"
-            android:layout_width="match_parent"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:hint="Sale Price"
             android:textColorHint="#666666"
@@ -81,7 +94,7 @@
 
         <EditText
             android:id="@+id/edtMRP"
-            android:layout_width="match_parent"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:hint="MRP"
             android:textColorHint="#666666"
@@ -91,7 +104,7 @@
 
         <EditText
             android:id="@+id/edtStock"
-            android:layout_width="match_parent"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:hint="Initial Stock"
             android:textColorHint="#666666"
@@ -101,11 +114,22 @@
 
         <Button
             android:id="@+id/btnSaveItem"
-            android:layout_width="match_parent"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:text="Save"
             android:backgroundTint="#F2C7C7"
             android:textColor="#333333"
             android:layout_marginTop="16dp"/>
+
+        <Button
+            android:id="@+id/btnCancelItem"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:backgroundTint="#D18383"
+            android:textColor="#333333"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"/>
+
     </LinearLayout>
 </ScrollView>

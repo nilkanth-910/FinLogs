@@ -10,11 +10,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -35,7 +31,6 @@ class Expense : AppCompatActivity() {
         addButton = findViewById<FloatingActionButton>(R.id.btnAdd)
         itemsContainer = findViewById(R.id.container)
 
-
         addButton.setOnClickListener {
             showAddExpenseDialog()
         }
@@ -53,6 +48,7 @@ class Expense : AppCompatActivity() {
         val edtExpCate = dialog.findViewById<EditText>(R.id.edtExpCate)
         val edtExpPayee = dialog.findViewById<EditText>(R.id.edtExpPayee)
         val btnSaveItem = dialog.findViewById<Button>(R.id.btnSaveItem)
+        val btnCancel = dialog.findViewById<Button>(R.id.btnCancelItem)
 
         val calendar = Calendar.getInstance()
 
@@ -85,6 +81,8 @@ class Expense : AppCompatActivity() {
                 Toast.makeText(this, "Please fill all fields!", Toast.LENGTH_SHORT).show()
             }
         }
+
+        btnCancel.setOnClickListener { dialog.dismiss() }
 
         dialog.show()
     }
@@ -133,12 +131,16 @@ class Expense : AppCompatActivity() {
         descriptionTextView.text = expense.category
         payee.text = expense.payee
 
+        cardView.setOnClickListener {
+            showExpenseDialog(expense)
+        }
 
         deleteExpenseIcon.setOnClickListener {
             showDeleteConfirmationDialog(expense)
         }
         itemsContainer.addView(cardView)
     }
+
 
     private fun showDeleteConfirmationDialog(expense: ExpenseModel) {
         AlertDialog.Builder(this)
@@ -158,5 +160,114 @@ class Expense : AppCompatActivity() {
             .addOnFailureListener {
                 Toast.makeText(this, "Failed to delete product!", Toast.LENGTH_SHORT).show()
             }
+    }
+    private fun showExpenseDialog(expense: ExpenseModel) {
+        val dialog = Dialog(this)
+        dialog.setContentView(R.layout.dialog_add_expense)
+
+        val dialogTitle = dialog.findViewById<TextView>(R.id.edtExpTitle)
+        val edtExpDate = dialog.findViewById<EditText>(R.id.edtExpDate)
+        val edtExpAmt = dialog.findViewById<EditText>(R.id.edtExpAmt)
+        val edtExpDesc = dialog.findViewById<EditText>(R.id.edtExpDesc)
+        val edtExpCate = dialog.findViewById<EditText>(R.id.edtExpCate)
+        val edtExpPayee = dialog.findViewById<EditText>(R.id.edtExpPayee)
+        val btnSaveItem = dialog.findViewById<Button>(R.id.btnSaveItem)
+        val btnCancel = dialog.findViewById<Button>(R.id.btnCancelItem)
+
+
+        dialogTitle.text = "Expense"
+        edtExpDate.setText("Date : " + expense.date)
+        edtExpAmt.setText("Amount : " + expense.amount.toString())
+        edtExpDesc.setText("Description : " + expense.description)
+        edtExpCate.setText("Category : " + expense.category)
+        edtExpPayee.setText("Payee : " + expense.payee)
+
+        edtExpDate.isEnabled = false
+        edtExpAmt.isEnabled = false
+        edtExpDesc.isEnabled = false
+        edtExpCate.isEnabled = false
+        edtExpPayee.isEnabled = false
+
+        btnSaveItem.text = "Edit"
+        btnCancel.text = "Close"
+
+        btnSaveItem.setOnClickListener {
+            updateExpense(expense)
+            dialog.dismiss()
+        }
+
+        btnCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
+    private fun updateExpense(expense: ExpenseModel) {
+
+
+        val dialog = Dialog(this)
+        dialog.setContentView(R.layout.dialog_add_expense)
+
+        val dialogTitle = dialog.findViewById<TextView>(R.id.edtExpTitle)
+        val edtExpDate = dialog.findViewById<EditText>(R.id.edtExpDate)
+        val edtExpAmt = dialog.findViewById<EditText>(R.id.edtExpAmt)
+        val edtExpDesc = dialog.findViewById<EditText>(R.id.edtExpDesc)
+        val edtExpCate = dialog.findViewById<EditText>(R.id.edtExpCate)
+        val edtExpPayee = dialog.findViewById<EditText>(R.id.edtExpPayee)
+        val btnSaveItem = dialog.findViewById<Button>(R.id.btnSaveItem)
+        val btnCancel = dialog.findViewById<Button>(R.id.btnCancelItem)
+
+        dialogTitle.text = "Update Expense"
+        edtExpDate.setText(expense.date)
+        edtExpAmt.setText(expense.amount.toString())
+        edtExpDesc.setText(expense.description)
+        edtExpCate.setText(expense.category)
+        edtExpPayee.setText(expense.payee)
+
+        val calendar = Calendar.getInstance()
+        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        calendar.time = sdf.parse(expense.date) ?: Date() // Parse existing date, handle potential null
+
+        edtExpDate.setOnClickListener {
+            val datePicker = DatePickerDialog(
+                this,
+                { _, year, month, dayOfMonth ->
+                    calendar.set(year, month, dayOfMonth)
+                    edtExpDate.setText(sdf.format(calendar.time))
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+            )
+            datePicker.show()
+        }
+
+        btnSaveItem.text = "Update" // Change button text for updating
+        btnSaveItem.setOnClickListener {
+            val date = edtExpDate.text.toString()
+            val amount = edtExpAmt.text.toString().toDoubleOrNull() ?: 0.0
+            val description = edtExpDesc.text.toString()
+            val category = edtExpCate.text.toString()
+            val payee = edtExpPayee.text.toString()
+
+            if (date.isNotEmpty() && amount > 0 && description.isNotEmpty() && category.isNotEmpty() && payee.isNotEmpty()) {
+                val updatedExpense = ExpenseModel(expense.expenseId, date, amount, description, category, payee)
+                databaseReference.child(expense.expenseId).setValue(updatedExpense)
+                    .addOnSuccessListener {
+                        Toast.makeText(this, "Expense updated", Toast.LENGTH_SHORT).show()
+                        dialog.dismiss()
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(this, "Failed to update expense", Toast.LENGTH_SHORT).show()
+                    }
+            } else {
+                Toast.makeText(this, "Please fill all fields!", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        btnCancel.setOnClickListener { dialog.dismiss() }
+
+        dialog.show()
     }
 }

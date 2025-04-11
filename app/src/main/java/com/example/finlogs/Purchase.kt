@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -118,6 +119,10 @@ class Purchase : AppCompatActivity() {
             showDeleteConfirmationDialog(purchase.purchaseId)
         }
 
+        cardView.setOnClickListener {
+            showPurchaseDialog(purchase)
+        }
+
         purchaseContainer.addView(cardView)
     }
 
@@ -186,6 +191,7 @@ class Purchase : AppCompatActivity() {
         val btnSavePurchase = dialog.findViewById<Button>(R.id.btnSavePurchase)
         val txtTotalAmount = dialog.findViewById<TextView>(R.id.txtTotalAmount)
         val listViewPurchaseItems = dialog.findViewById<ListView>(R.id.listViewPurchaseItems)
+        val btnCancel = dialog.findViewById<Button>(R.id.btnCancelPurchase)
 
         val calendar = Calendar.getInstance()
         edtDate.setOnClickListener {
@@ -232,6 +238,10 @@ class Purchase : AppCompatActivity() {
                 .addOnFailureListener {
                     Toast.makeText(this, "Failed to Add Purchase!", Toast.LENGTH_SHORT).show()
                 }
+        }
+
+        btnCancel.setOnClickListener {
+            dialog.dismiss()
         }
 
         dialog.show()
@@ -309,6 +319,142 @@ class Purchase : AppCompatActivity() {
         dialog.show()
     }
 
+    private fun showPurchaseDialog(purchase: PurchaseModel) {
+        val dialog = Dialog(this)
+        dialog.setContentView(R.layout.dialog_add_purchase)
 
+        val dialogTitle = dialog.findViewById<TextView>(R.id.edtPurchaseTitle)
+        val edtDate = dialog.findViewById<EditText>(R.id.edtPurchaseDate)
+        val edtSupplierName = dialog.findViewById<EditText>(R.id.edtSupplierName)
+        val edtInvoiceNo = dialog.findViewById<EditText>(R.id.edtInvoiceNo)
+        val listViewPurchaseItems = dialog.findViewById<ListView>(R.id.listViewPurchaseItems)
+        val txtTotalAmount = dialog.findViewById<TextView>(R.id.txtTotalAmount)
+        val btnSavePurchase = dialog.findViewById<Button>(R.id.btnSavePurchase)
+        val btnCancelPurchase = dialog.findViewById<Button>(R.id.btnCancelPurchase)
+        val btnAddPurchaseItem = dialog.findViewById<Button>(R.id.btnAddPurchaseItem)
+
+        dialogTitle.text = "Purchase Details"
+        edtDate.setText(purchase.date)
+        edtSupplierName.setText(purchase.supplierName)
+        edtInvoiceNo.setText(purchase.invoiceNo)
+        txtTotalAmount.text = "Total: ₹${purchase.totalAmount}"
+
+        // Disable editing for all fields
+        edtDate.isEnabled = false
+        edtSupplierName.isEnabled = false
+        edtInvoiceNo.isEnabled = false
+
+        // Populate purchase items in the list
+        val adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_list_item_1,
+            purchase.items.map { "${it.itemName} - ₹${String.format("%.2f", it.amount)}" }
+        )
+        listViewPurchaseItems.adapter = adapter
+
+        btnAddPurchaseItem.visibility = View.GONE
+
+        btnSavePurchase.text = "Edit"
+        btnCancelPurchase.text = "Close"
+
+        btnSavePurchase.setOnClickListener {
+            updatePurchase(purchase)
+            dialog.dismiss()
+        }
+
+        btnCancelPurchase.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
+    private fun updatePurchase(purchase: PurchaseModel) {
+        val dialog = Dialog(this)
+        dialog.setContentView(R.layout.dialog_add_purchase)
+
+        val dialogTitle = dialog.findViewById<TextView>(R.id.edtPurchaseTitle)
+        val edtDate = dialog.findViewById<EditText>(R.id.edtPurchaseDate)
+        val edtSupplierName = dialog.findViewById<EditText>(R.id.edtSupplierName)
+        val edtInvoiceNo = dialog.findViewById<EditText>(R.id.edtInvoiceNo)
+        val btnAddPurchaseItem = dialog.findViewById<Button>(R.id.btnAddPurchaseItem)
+        val btnSavePurchase = dialog.findViewById<Button>(R.id.btnSavePurchase)
+        val txtTotalAmount = dialog.findViewById<TextView>(R.id.txtTotalAmount)
+        val listViewPurchaseItems = dialog.findViewById<ListView>(R.id.listViewPurchaseItems)
+        val btnCancelPurchase = dialog.findViewById<Button>(R.id.btnCancelPurchase)
+
+        val calendar = Calendar.getInstance()
+        val purchaseItems = purchase.items.toMutableList()
+
+        dialogTitle.text = "Edit Purchase"
+        edtDate.setText(purchase.date)
+        edtSupplierName.setText(purchase.supplierName)
+        edtInvoiceNo.setText(purchase.invoiceNo)
+        txtTotalAmount.text = "Total: ₹${purchase.totalAmount}"
+
+        // Enable DatePicker for date field
+        edtDate.setOnClickListener {
+            val datePicker = DatePickerDialog(
+                this,
+                { _, year, month, dayOfMonth ->
+                    calendar.set(year, month, dayOfMonth)
+                    val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                    edtDate.setText(sdf.format(calendar.time))
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+            )
+            datePicker.show()
+        }
+
+        // Populate purchase items in the list
+        val adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_list_item_1,
+            purchaseItems.map { "${it.itemName} - ₹${String.format("%.2f", it.amount)}" }
+        )
+        listViewPurchaseItems.adapter = adapter
+
+        btnAddPurchaseItem.setOnClickListener {
+            showAddPurchaseItemDialog(purchaseItems, listViewPurchaseItems, txtTotalAmount)
+        }
+
+        btnSavePurchase.setOnClickListener {
+            val updatedDate = edtDate.text.toString()
+            val updatedSupplierName = edtSupplierName.text.toString()
+            val updatedInvoiceNo = edtInvoiceNo.text.toString()
+            val updatedTotalAmount = purchaseItems.sumOf { it.amount }
+
+            if (updatedDate.isEmpty() || updatedSupplierName.isEmpty() || updatedInvoiceNo.isEmpty()) {
+                Toast.makeText(this, "Fill all fields!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val updatedPurchase = PurchaseModel(
+                purchaseId = purchase.purchaseId,
+                date = updatedDate,
+                supplierName = updatedSupplierName,
+                invoiceNo = updatedInvoiceNo,
+                totalAmount = updatedTotalAmount,
+                items = purchaseItems
+            )
+
+            databaseReference.child(purchase.purchaseId).setValue(updatedPurchase)
+                .addOnSuccessListener {
+                    Toast.makeText(this, "Purchase updated successfully!", Toast.LENGTH_SHORT).show()
+                    dialog.dismiss()
+                }
+                .addOnFailureListener {
+                    Toast.makeText(this, "Failed to update purchase!", Toast.LENGTH_SHORT).show()
+                }
+        }
+
+        btnCancelPurchase.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
 
 }

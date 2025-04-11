@@ -9,6 +9,7 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.*
 import android.app.DatePickerDialog
+import android.view.View
 import androidx.appcompat.app.AlertDialog
 import java.text.SimpleDateFormat
 import java.util.*
@@ -112,6 +113,10 @@ class Sale : AppCompatActivity() {
             showDeleteConfirmationDialog(sale)
         }
 
+        cardView.setOnClickListener {
+            showSaleDialog(sale)
+        }
+
         salesContainer.addView(cardView)
     }
 
@@ -179,6 +184,7 @@ class Sale : AppCompatActivity() {
         val btnSaveSale = dialog.findViewById<Button>(R.id.btnSaveSale)
         val txtTotalAmount = dialog.findViewById<TextView>(R.id.txtTotalAmount)
         val listViewSaleItems = dialog.findViewById<ListView>(R.id.listViewSaleItems)
+        val btnCancel = dialog.findViewById<Button>(R.id.btnCancelSale)
 
         val calendar = Calendar.getInstance()
 
@@ -230,6 +236,10 @@ class Sale : AppCompatActivity() {
                         Toast.makeText(this, "Failed to Add Sale!", Toast.LENGTH_SHORT).show()
                     }
             }
+        }
+
+        btnCancel.setOnClickListener {
+            dialog.dismiss()
         }
 
         dialog.show()
@@ -350,5 +360,139 @@ class Sale : AppCompatActivity() {
             }
         }
     }
+
+    private fun showSaleDialog(sale: SaleModel) {
+        val dialog = Dialog(this)
+        dialog.setContentView(R.layout.dialog_add_sale)
+
+        val dialogTitle = dialog.findViewById<TextView>(R.id.edtSaleTitle)
+        val btnAddSaleItem = dialog.findViewById<Button>(R.id.btnAddSaleItem)
+        val edtDate = dialog.findViewById<EditText>(R.id.edtSaleDate)
+        val edtCustomerName = dialog.findViewById<EditText>(R.id.edtCustomerName)
+        val listViewSaleItems = dialog.findViewById<ListView>(R.id.listViewSaleItems)
+        val txtTotalAmount = dialog.findViewById<TextView>(R.id.txtTotalAmount)
+        val btnSaveSale = dialog.findViewById<Button>(R.id.btnSaveSale)
+        val btnCancelSale = dialog.findViewById<Button>(R.id.btnCancelSale)
+
+        // Populate fields with sale details
+        dialogTitle.text = "Sale Details"
+        edtDate.setText(sale.date)
+        edtCustomerName.setText(sale.customerName)
+        txtTotalAmount.text = "Total: ₹${sale.totalAmount}"
+
+        // Disable editing for all fields
+        edtDate.isEnabled = false
+        edtCustomerName.isEnabled = false
+
+        // Populate sale items in the list
+        val adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_list_item_1,
+            sale.saleItems.map { "${it.productName} - ₹${String.format("%.2f", it.amount)}" }
+        )
+        listViewSaleItems.adapter = adapter
+
+        btnAddSaleItem.visibility = View.GONE
+
+        btnSaveSale.text = "Edit"
+        btnCancelSale.text = "Close"
+
+        btnSaveSale.setOnClickListener {
+            updateSale(sale)
+            dialog.dismiss()
+        }
+
+        btnCancelSale.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
+    private fun updateSale(sale: SaleModel) {
+        val dialog = Dialog(this)
+        dialog.setContentView(R.layout.dialog_add_sale)
+
+        val dialogTitle = dialog.findViewById<TextView>(R.id.edtSaleTitle)
+        val edtDate = dialog.findViewById<EditText>(R.id.edtSaleDate)
+        val edtCustomerName = dialog.findViewById<EditText>(R.id.edtCustomerName)
+        val btnAddSaleItem = dialog.findViewById<Button>(R.id.btnAddSaleItem)
+        val btnSaveSale = dialog.findViewById<Button>(R.id.btnSaveSale)
+        val txtTotalAmount = dialog.findViewById<TextView>(R.id.txtTotalAmount)
+        val listViewSaleItems = dialog.findViewById<ListView>(R.id.listViewSaleItems)
+        val btnCancel = dialog.findViewById<Button>(R.id.btnCancelSale)
+
+        val calendar = Calendar.getInstance()
+        val saleItems = sale.saleItems.toMutableList()
+
+        dialogTitle.text = "Edit Sale"
+        edtDate.setText(sale.date)
+        edtCustomerName.setText(sale.customerName)
+        txtTotalAmount.text = "Total: ₹${sale.totalAmount}"
+
+        // Enable DatePicker for date field
+        edtDate.setOnClickListener {
+            val datePicker = DatePickerDialog(
+                this,
+                { _, year, month, dayOfMonth ->
+                    calendar.set(year, month, dayOfMonth)
+                    val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                    edtDate.setText(sdf.format(calendar.time))
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+            )
+            datePicker.show()
+        }
+
+        // Populate sale items in the list
+        val adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_list_item_1,
+            saleItems.map { "${it.productName} - ₹${String.format("%.2f", it.amount)}" }
+        )
+        listViewSaleItems.adapter = adapter
+
+        btnAddSaleItem.setOnClickListener {
+            showAddSaleItemDialog(saleItems, listViewSaleItems, txtTotalAmount)
+        }
+
+        btnSaveSale.setOnClickListener {
+            val updatedDate = edtDate.text.toString()
+            val updatedCustomerName = edtCustomerName.text.toString()
+            val updatedTotalAmount = saleItems.sumOf { it.amount }
+
+            if (updatedDate.isEmpty() || updatedCustomerName.isEmpty()) {
+                Toast.makeText(this, "Fill all fields!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val updatedSale = SaleModel(
+                saleId = sale.saleId,
+                date = updatedDate,
+                customerName = updatedCustomerName,
+                invoiceNo = sale.invoiceNo,
+                totalAmount = updatedTotalAmount,
+                saleItems = saleItems
+            )
+
+            databaseReference.child(sale.saleId).setValue(updatedSale)
+                .addOnSuccessListener {
+                    Toast.makeText(this, "Sale updated successfully!", Toast.LENGTH_SHORT).show()
+                    dialog.dismiss()
+                }
+                .addOnFailureListener {
+                    Toast.makeText(this, "Failed to update sale!", Toast.LENGTH_SHORT).show()
+                }
+        }
+
+        btnCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
 
 }
