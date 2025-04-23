@@ -2,6 +2,9 @@ package com.example.finlogs
 
 import android.app.DatePickerDialog
 import android.app.Dialog
+import android.content.Intent
+import android.graphics.Paint
+import android.graphics.pdf.PdfDocument
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.*
@@ -9,15 +12,21 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.core.content.FileProvider
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.database.*
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.text.category
 
 class Expense : AppCompatActivity() {
 
     private lateinit var itemsContainer: LinearLayout
     private lateinit var databaseReference: DatabaseReference
+    private lateinit var reversedSnapshot: List<DataSnapshot>
     private lateinit var addButton: com.google.android.material.floatingactionbutton.FloatingActionButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,6 +35,16 @@ class Expense : AppCompatActivity() {
 
         var topBarTitle = findViewById<TextView>(R.id.topBarTitle)
         topBarTitle.text = "Expenses"
+
+        var filter = findViewById<ImageView>(R.id.filter)
+        filter.setOnClickListener {
+            applyFilter()
+        }
+
+        var back = findViewById<ImageView>(R.id.back)
+        back.setOnClickListener {
+            onBackPressed()
+        }
 
         databaseReference = FirebaseDatabase.getInstance().getReference("expenses")
         addButton = findViewById<FloatingActionButton>(R.id.btnAdd)
@@ -36,6 +55,34 @@ class Expense : AppCompatActivity() {
         }
 
         loadExpenses()
+    }
+
+    private fun applyFilter(){
+
+        DialogUtils.filterDialog(this) { filterCriteria ->
+            
+            val filteredExpenses = reversedSnapshot.filter { expense ->
+                val matchesName = filterCriteria.name.isEmpty() || (expense.getValue(ExpenseModel::class.java)?.payee?.contains(filterCriteria.name, ignoreCase = true) ?: false)
+                val matchesInvoice = filterCriteria.invoiceNo.isEmpty() || (expense.getValue(ExpenseModel::class.java)?.category?.contains(filterCriteria.invoiceNo, ignoreCase = true) ?: false)
+                val matchesPrice = (filterCriteria.minPrice == null || (expense.getValue(ExpenseModel::class.java)?.amount ?: 0.0) >= filterCriteria.minPrice) &&
+                        (filterCriteria.maxPrice == null || (expense.getValue(ExpenseModel::class.java)?.amount ?: 0.0) <= filterCriteria.maxPrice)
+                val matchesDate = (filterCriteria.startDate.isEmpty() || (expense.getValue(ExpenseModel::class.java)?.date ?: "") >= filterCriteria.startDate) &&
+                        (filterCriteria.endDate.isEmpty() || (expense.getValue(ExpenseModel::class.java)?.date ?: "") <= filterCriteria.endDate)
+                matchesName && matchesInvoice && matchesPrice && matchesDate
+            }
+
+            itemsContainer.removeAllViews()
+            for (expenseSnapshot in filteredExpenses) {
+                val expense = expenseSnapshot.getValue(ExpenseModel::class.java)
+                if (expense != null) {
+                    addExpenseCard(expense)
+                }
+            }
+
+            if (filteredExpenses.isEmpty()) {
+                Toast.makeText(this, "No Record found", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun showAddExpenseDialog() {
@@ -101,9 +148,9 @@ class Expense : AppCompatActivity() {
     private fun loadExpenses() {
         databaseReference.orderByChild("date").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                itemsContainer.removeAllViews() // Clear existing views
+                itemsContainer.removeAllViews()
 
-                val reversedSnapshot = snapshot.children.reversed()
+                reversedSnapshot = snapshot.children.reversed()
                 for (expenseSnapshot in reversedSnapshot) {
                     val expense = expenseSnapshot.getValue(ExpenseModel::class.java)
                     if (expense != null) {
@@ -125,6 +172,7 @@ class Expense : AppCompatActivity() {
         val descriptionTextView = cardView.findViewById<TextView>(R.id.invTextView)
         val deleteExpenseIcon = cardView.findViewById<ImageView>(R.id.deleteIcon)
         val payee = cardView.findViewById<TextView>(R.id.cstTextView)
+        val shareIcon = cardView.findViewById<ImageView>(R.id.shareIcon)
 
         dateTextView.text = expense.date
         amountTextView.text = "₹${expense.amount}"
@@ -135,12 +183,54 @@ class Expense : AppCompatActivity() {
             showExpenseDialog(expense)
         }
 
+
+        shareIcon.setOnClickListener {
+            sharePDF(expense)
+        }
+
         deleteExpenseIcon.setOnClickListener {
             showDeleteConfirmationDialog(expense)
         }
         itemsContainer.addView(cardView)
     }
 
+    private fun sharePDF(expense: ExpenseModel) {
+        val pdfDocument = PdfDocument()
+        val pageInfo = PdfDocument.PageInfo.Builder(300, 600, 1).create()
+        val page = pdfDocument.startPage(pageInfo)
+        val canvas = page.canvas
+        val paint = Paint()
+
+        // Draw expense details on the PDF
+        paint.textSize = 16f
+        canvas.drawText("Expense ID: ${expense.expenseId}", 10f, 25f, paint)
+        canvas.drawText("Category: ${expense.category}", 10f, 50f, paint)
+        canvas.drawText("Date: ${expense.date}", 10f, 75f, paint)
+        canvas.drawText("Amount: ₹${expense.amount}", 10f, 100f, paint)
+        canvas.drawText("Description: ${expense.description}", 10f, 125f, paint)
+
+        pdfDocument.finishPage(page)
+
+        // Save the PDF to external storage
+        val fileName = "Expense_${expense.expenseId}.pdf"
+        val file = File(getExternalFilesDir(null), fileName)
+        try {
+            pdfDocument.writeTo(FileOutputStream(file))
+            pdfDocument.close()
+
+            // Share the PDF
+            val uri = FileProvider.getUriForFile(this, "${packageName}.provider", file)
+            val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                type = "application/pdf"
+                putExtra(Intent.EXTRA_STREAM, uri)
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+            startActivity(Intent.createChooser(shareIntent, "Share Expense PDF"))
+        } catch (e: IOException) {
+            e.printStackTrace()
+            Toast.makeText(this, "Failed to generate PDF!", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     private fun showDeleteConfirmationDialog(expense: ExpenseModel) {
         AlertDialog.Builder(this)

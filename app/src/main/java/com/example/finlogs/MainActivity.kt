@@ -4,20 +4,25 @@ import android.content.Context // Import Context
 import android.content.Intent
 import android.content.SharedPreferences // Import SharedPreferences
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
         // ---- START: Check Login State ----
         // Check login state FIRST
         val loginPrefs: SharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE) // Use Context.MODE_PRIVATE
         val isLoggedIn = loginPrefs.getBoolean("isLoggedIn", false)
 
+
         if (isLoggedIn) {
+
             // User is logged in, go directly to HomeActivity
             startActivity(Intent(this, HomeActivity::class.java))
             finish() // Finish MainActivity so user can't go back to it using the back button

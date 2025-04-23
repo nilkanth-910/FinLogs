@@ -23,6 +23,7 @@ class Items : AppCompatActivity() {
     private lateinit var addButton: com.google.android.material.floatingactionbutton.FloatingActionButton
     private lateinit var productList: MutableList<Product>
     private lateinit var databaseReference: DatabaseReference
+    private lateinit var itemsList: Iterable<DataSnapshot>
     private val database = FirebaseDatabase.getInstance().reference.child("products")
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,6 +32,17 @@ class Items : AppCompatActivity() {
 
         var topBarTitle = findViewById<TextView>(R.id.topBarTitle)
         topBarTitle.text = "Items"
+
+        var filter = findViewById<ImageView>(R.id.filter)
+        filter.setOnClickListener {
+            applyFilter()
+        }
+
+
+        var back = findViewById<ImageView>(R.id.back)
+        back.setOnClickListener {
+            onBackPressed()
+        }
 
         databaseReference = FirebaseDatabase.getInstance().getReference("products")
         addButton = findViewById(R.id.btnAdd)
@@ -42,6 +54,40 @@ class Items : AppCompatActivity() {
         }
 
         loadProducts()
+    }
+
+    private fun applyFilter() {
+        DialogUtils.filterDialog(this) { filterCriteria ->
+            // Apply the filter criteria to the items list
+            val filteredItems = itemsList.filter { itemSnapshot ->
+                val item = itemSnapshot.getValue(Product::class.java)
+                if (item != null) {
+                    val matchesName = filterCriteria.name.isEmpty() || item.productName.contains(filterCriteria.name, ignoreCase = true)
+                    val matchesPrice = (filterCriteria.minPrice == null || item.grossPrice >= filterCriteria.minPrice) &&
+                            (filterCriteria.maxPrice == null || item.grossPrice <= filterCriteria.maxPrice)
+//                    val matchesStock = (filterCriteria.minStock == null || item.stock >= filterCriteria.minStock) &&
+//                            (filterCriteria.maxStock == null || item.stock <= filterCriteria.maxStock)
+
+                    matchesName && matchesPrice
+                            //&& matchesStock
+
+                } else {
+                    false
+                }
+            }
+
+            itemsContainer.removeAllViews()
+            for (itemSnapshot in filteredItems) {
+                val item = itemSnapshot.getValue(Product::class.java)
+                if (item != null) {
+                    addItemCard(item)
+                }
+            }
+
+            if (filteredItems.isEmpty()) {
+                Toast.makeText(this, "No Record found", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun showAddItemPopup() {
@@ -116,6 +162,7 @@ class Items : AppCompatActivity() {
 
                 itemsContainer.removeAllViews() // Clear existing cards
 
+                itemsList = snapshot.children
                 for (productSnapshot in snapshot.children) {
                     val product = productSnapshot.getValue(Product::class.java)
                     if (product != null) {
@@ -137,6 +184,9 @@ class Items : AppCompatActivity() {
         val productMRPTextView = cardView.findViewById<TextView>(R.id.dateTextView)
         val stockTextView = cardView.findViewById<TextView>(R.id.cstTextView)
         val deleteProductIcon = cardView.findViewById<ImageView>(R.id.deleteIcon)
+        val shareIcon = cardView.findViewById<ImageView>(R.id.shareIcon)
+
+        shareIcon.visibility = View.GONE
 
         itemNameTextView.text = "${product.productName}"
         productSalePriceTextView.text = "GP: ₹${product.grossPrice}"

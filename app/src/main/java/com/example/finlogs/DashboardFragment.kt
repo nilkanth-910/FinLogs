@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.TextView
@@ -45,6 +47,11 @@ class DashboardFragment : Fragment() {
         var productsCard = view.findViewById<CardView>(R.id.cardProducts)
         var salesReturnCard = view.findViewById<CardView>(R.id.cardSalesReturn)
         var purchaseReturnCard = view.findViewById<CardView>(R.id.cardPurchaseReturn)
+        var filter = view.findViewById<ImageView>(R.id.filter)
+        var back = view.findViewById<ImageView>(R.id.back)
+
+        back.visibility = View.GONE
+        filter.visibility = View.GONE
 
         ttlSales = view.findViewById<TextView>(R.id.ttlSale)
         ttlPurchase = view.findViewById<TextView>(R.id.ttlPurchase)

@@ -3,7 +3,11 @@
     <style name="Base.Theme.FinLogs" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:fontFamily">@font/ar_one_sans_medium</item>
     </style>
-
+    <style name="ListViewTextAppearance" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textColor">@color/black</item>
+    </style>
     <style name="Theme.FinLogs" parent="Base.Theme.FinLogs" />
+
 </resources>

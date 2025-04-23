@@ -3,5 +3,9 @@
     <style name="Base.Theme.FinLogs" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <item name="android:fontFamily">@font/ar_one_sans_medium</item>
+    </style>
+    <style name="ListViewTextAppearance" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
     </style>
 </resources>

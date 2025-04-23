@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
@@ -23,6 +24,11 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
 
         var topBarTitle = findViewById<TextView>(R.id.topBarTitle)
+        var filter = findViewById<ImageView>(R.id.filter)
+        var back = findViewById<ImageView>(R.id.back)
+
+        filter.visibility = View.GONE
+        back.visibility = View.GONE
 
         topBarTitle.text = "Login"
 

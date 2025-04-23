@@ -7,10 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import android.widget.ListView
 import android.widget.TextView
 import com.google.firebase.database.*
+import com.google.firebase.database.collection.LLRBNode
 
 class LedgerFragment : Fragment() {
 
@@ -34,11 +36,19 @@ class LedgerFragment : Fragment() {
         val topBarTitle = view.findViewById<TextView>(R.id.topBarTitle)
         topBarTitle.text = topBarTitle.text.toString()
 
+        var filter = view.findViewById<ImageView>(R.id.filter)
+        var back = view.findViewById<ImageView>(R.id.back)
+
+        back.visibility = View.GONE
+        filter.visibility = View.GONE
+
         autoCompleteItem = view.findViewById(R.id.autoCompleteItem)
         listOutwardsView = view.findViewById(R.id.listViewOutwards)
         listInwardsView = view.findViewById(R.id.listViewInwards)
         ttlInwards = view.findViewById(R.id.ttlInwards)
         ttlOutwards = view.findViewById(R.id.ttlOutwards)
+
+
 
         saleDatabaseReference = FirebaseDatabase.getInstance().getReference("sales")
         purchaseDatabaseReference = FirebaseDatabase.getInstance().getReference("purchases")
@@ -50,6 +60,7 @@ class LedgerFragment : Fragment() {
         autoCompleteItem.setOnItemClickListener { parent, view, position, id ->
             val selectedItem = parent.getItemAtPosition(position) as String
             loadProductData(selectedItem)
+            autoCompleteItem.clearFocus()
         }
         return view
     }
@@ -95,7 +106,6 @@ class LedgerFragment : Fragment() {
                 val inwardsAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, inwardsData)
                 listInwardsView.adapter = inwardsAdapter
                 ttlInwards.text = "Total Inwards: ${String.format("%.2f", ttlInward)}"
-
             }
             override fun onCancelled(error: DatabaseError) {
                 Log.e("LedgerFragment", "Failed to load inwards data: ${error.message}")

@@ -72,6 +72,16 @@
                 <ImageView
                     android:layout_marginTop="10dp"
                     android:layout_marginRight="8dp"
+                    android:id="@+id/shareIcon"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="center_vertical"
+                    android:contentDescription="Delete Sale"
+                    android:src="@drawable/ic_share" />
+
+                <ImageView
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="8dp"
                     android:id="@+id/deleteIcon"
                     android:layout_width="25dp"
                     android:layout_height="25dp"

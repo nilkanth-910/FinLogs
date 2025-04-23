@@ -10,22 +10,22 @@ import android.provider.OpenableColumns // To get filename (optional)
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.EditText
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher // Import ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts // Import ActivityResultContracts
-import androidx.appcompat.app.AlertDialog // Import AlertDialog
-import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.File // Import File (optional, for displaying filename)
 
 class SettingFragment : Fragment() {
 
@@ -39,26 +39,21 @@ class SettingFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) { // Use onCreate for launcher registration
         super.onCreate(savedInstanceState)
 
+
         // --- START: Register ActivityResultLauncher ---
         filePickerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 result.data?.data?.let { uri ->
-                    // File selected successfully, show confirmation dialog
                     showImportConfirmationDialog(uri)
-                    // Optional: Display selected filename
                     val filename = getFileName(requireContext(), uri)
                     Log.d("SettingFragment", "Selected file: $filename, URI: $uri")
-                    // You could show the filename in a TextView if needed
                 } ?: run {
                     Toast.makeText(requireContext(), "Failed to get file URI", Toast.LENGTH_SHORT).show()
                 }
             } else {
                 Log.d("SettingFragment", "File selection cancelled or failed.")
-                // Optional: Show a message if the user cancelled
-                // Toast.makeText(requireContext(), "File selection cancelled", Toast.LENGTH_SHORT).show()
             }
         }
-        // --- END: Register ActivityResultLauncher ---
     }
 
     override fun onCreateView(
@@ -73,22 +68,113 @@ class SettingFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val btnAddProduct = view.findViewById<TextView>(R.id.btnAddProduct) // Corrected ID reference if it's a TextView
-        val btnLogout = view.findViewById<Button>(R.id.logoutButton)
+        val btnLogout = view.findViewById<Button>(R.id.btnLogout)
+        val btnUser = view.findViewById<Button>(R.id.btnUseProfile)
 
-        // --- START: Updated btnAddProduct Logic ---
+        val filter = view.findViewById<ImageView>(R.id.filter)
+        val back = view.findViewById<ImageView>(R.id.back)
+
+        back.visibility = View.GONE
+        filter.visibility = View.GONE
+
         btnAddProduct.setOnClickListener {
-            // Launch the file picker
+
             val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
                 addCategory(Intent.CATEGORY_OPENABLE)
-                // Temporarily allow any file type for testing
-                type = "*/*"  // <<-- Change this line
+
+                type = "*/*"
             }
             Log.d("SettingFragment", "Launching file picker for ANY file type (testing).") // Optional: Update log
             filePickerLauncher.launch(intent)
         }
-        // --- END: Updated btnAddProduct Logic ---
 
-        // --- Logout Button Logic (Keep as is) ---
+        btnUser.setOnClickListener {
+            val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_user, null)
+            val dialog = AlertDialog.Builder(requireContext())
+                .setView(dialogView)
+                .setCancelable(false)
+                .create()
+
+            val usernameEditText = dialogView.findViewById<EditText>(R.id.edtUserName)
+            val emailEditText = dialogView.findViewById<EditText>(R.id.edtEmail)
+            val mobileNoEditText = dialogView.findViewById<EditText>(R.id.edtMobile)
+            val storeNameEditText = dialogView.findViewById<EditText>(R.id.edtStoreName)
+            val passwordEditText = dialogView.findViewById<EditText>(R.id.edtPassword)
+            val btnSaveItem = dialogView.findViewById<Button>(R.id.btnSaveItem)
+            val btnCancelItem = dialogView.findViewById<Button>(R.id.btnCancelItem)
+
+            // Initially set fields to read-only
+            usernameEditText.isEnabled = false
+            emailEditText.isEnabled = false
+            mobileNoEditText.isEnabled = false
+            storeNameEditText.isEnabled = false
+            passwordEditText.isEnabled = false
+            btnSaveItem.text = "Edit"
+
+            // Fetch user data from the database
+//            val currentUser = FirebaseAuth.getInstance().currentUser
+//            val databaseRef = FirebaseDatabase.getInstance().getReference("users").child(currentUser?.uid ?: "")
+
+            val databaseRef = FirebaseDatabase.getInstance().getReference("users").child("shmart25") // Replace with actual user ID
+            Log.d("UserDATA", "Database reference: $databaseRef")
+
+            databaseRef.get().addOnSuccessListener { snapshot ->
+                if (snapshot.exists()) {
+                    usernameEditText.setText(snapshot.child("username").value.toString())
+                    emailEditText.setText(snapshot.child("email").value.toString())
+                    passwordEditText.setText(snapshot.child("password").value.toString())
+                    mobileNoEditText.setText(snapshot.child("mobileNo").value.toString())
+                    storeNameEditText.setText(snapshot.child("storeName").value.toString())
+                } else {
+                    Toast.makeText(requireContext(), "User data not found", Toast.LENGTH_SHORT).show()
+                }
+            }.addOnFailureListener {
+                Toast.makeText(requireContext(), "Failed to fetch user data: ${it.message}", Toast.LENGTH_SHORT).show()
+            }
+
+            btnSaveItem.setOnClickListener {
+                if (btnSaveItem.text == "Edit") {
+                    // Enable fields for editing
+                    usernameEditText.isEnabled = true
+                    emailEditText.isEnabled = true
+                    passwordEditText.isEnabled = true
+                    mobileNoEditText.isEnabled = true
+                    storeNameEditText.isEnabled = true
+                    btnSaveItem.text = "Save"
+                } else {
+                    // Save changes to the database
+                    val updatedData = mapOf(
+                        "username" to usernameEditText.text.toString(),
+                        "email" to emailEditText.text.toString(),
+                        "mobileNo" to mobileNoEditText.text.toString(),
+                        "password" to passwordEditText.text.toString(),
+                        "storeName" to storeNameEditText.text.toString()
+                    )
+
+                    databaseRef.updateChildren(updatedData).addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            Toast.makeText(requireContext(), "User data updated successfully", Toast.LENGTH_SHORT).show()
+                            // Set fields back to read-only
+                            usernameEditText.isEnabled = false
+                            emailEditText.isEnabled = false
+                            passwordEditText.isEnabled = false
+                            mobileNoEditText.isEnabled = false
+                            storeNameEditText.isEnabled = false
+                            btnSaveItem.text = "Edit"
+                        } else {
+                            Toast.makeText(requireContext(), "Failed to update user data: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            }
+
+            btnCancelItem.setOnClickListener {
+                dialog.dismiss()
+            }
+
+            dialog.show()
+        }
+
         btnLogout.setOnClickListener {
             FirebaseAuth.getInstance().signOut()
             val loginPrefs: SharedPreferences =

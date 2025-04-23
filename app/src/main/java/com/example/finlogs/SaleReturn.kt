@@ -9,8 +9,15 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.*
 import android.app.DatePickerDialog
+import android.content.Intent
+import android.graphics.Paint
+import android.graphics.pdf.PdfDocument
 import android.view.View
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.FileProvider
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.text.format
@@ -20,6 +27,7 @@ class SaleReturn : AppCompatActivity() {
     private lateinit var btnAddSaleReturn: com.google.android.material.floatingactionbutton.FloatingActionButton
     private lateinit var salesReturnContainer: LinearLayout
     private lateinit var saleReturnList: MutableList<SaleReturnModel>
+    private lateinit var reversedList: List<SaleReturnModel>
     private lateinit var databaseReference: DatabaseReference
     private lateinit var itemsReference: DatabaseReference
     private val itemNameMap = mutableMapOf<String, Product>()
@@ -29,6 +37,16 @@ class SaleReturn : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sale_return)
         var topBarTitle = findViewById<TextView>(R.id.topBarTitle)
+
+        var filter = findViewById<ImageView>(R.id.filter)
+        filter.setOnClickListener {
+            applyFilter()
+        }
+
+        var back = findViewById<ImageView>(R.id.back)
+        back.setOnClickListener {
+            onBackPressed()
+        }
 
         topBarTitle.text = "Sale Return"
 
@@ -46,6 +64,32 @@ class SaleReturn : AppCompatActivity() {
         itemAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, mutableListOf())
         loadItems()
         loadSalesReturn()
+    }
+
+    private fun applyFilter(){
+        DialogUtils.filterDialog(this) { filterCriteria ->
+            // Apply the filter criteria to the sales list
+
+            val filteredSalesReturn = reversedList.filter { sale ->
+                val matchesName = filterCriteria.name.isEmpty() || sale.customerName.contains(filterCriteria.name, ignoreCase = true)
+                val matchesInvoice = filterCriteria.invoiceNo.isEmpty() || sale.returnInvoiceNo.contains(filterCriteria.invoiceNo, ignoreCase = true)
+                val matchesPrice = (filterCriteria.minPrice == null || sale.totalAmount >= filterCriteria.minPrice) &&
+                        (filterCriteria.maxPrice == null || sale.totalAmount <= filterCriteria.maxPrice)
+                val matchesDate = (filterCriteria.startDate.isEmpty() || sale.date >= filterCriteria.startDate) &&
+                        (filterCriteria.endDate.isEmpty() || sale.date <= filterCriteria.endDate)
+
+                matchesName && matchesInvoice && matchesPrice && matchesDate
+            }
+
+            salesReturnContainer.removeAllViews()
+            for (sale in filteredSalesReturn) {
+                addSaleReturnCard(sale)
+            }
+
+            if (filteredSalesReturn.isEmpty()) {
+                Toast.makeText(this, "No Record found", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun loadItems() {
@@ -81,7 +125,7 @@ class SaleReturn : AppCompatActivity() {
                     val saleReturn = saleReturnSnapshot.getValue(SaleReturnModel::class.java)
                     saleReturn?.let { tempList.add(it) }
                 }
-                val reversedList = tempList.reversed()
+                reversedList = tempList.reversed()
 
                 salesReturnContainer.removeAllViews() // Clear existing cards
 
@@ -103,11 +147,17 @@ class SaleReturn : AppCompatActivity() {
         val saleDateTextView = cardView.findViewById<TextView>(R.id.dateTextView)
         val deleteSaleIcon = cardView.findViewById<ImageView>(R.id.deleteIcon)
         val cstTextView = cardView.findViewById<TextView>(R.id.cstTextView)
+        val shareIcon = cardView.findViewById<ImageView>(R.id.shareIcon)
 
         invoiceTextView.text = "${saleReturn.returnInvoiceNo}"
         saleAmountTextView.text = "₹${saleReturn.totalAmount}"
         cstTextView.text = "${saleReturn.customerName}"
         saleDateTextView.text = "${saleReturn.date}"
+
+        shareIcon.setOnClickListener {
+            sharePDF(saleReturn)
+        }
+
 
         deleteSaleIcon.setOnClickListener {
             showDeleteConfirmationDialog(saleReturn)
@@ -118,6 +168,51 @@ class SaleReturn : AppCompatActivity() {
         }
 
         salesReturnContainer.addView(cardView)
+    }
+
+    private fun sharePDF(saleReturn: SaleReturnModel) {
+        val pdfDocument = PdfDocument()
+        val pageInfo = PdfDocument.PageInfo.Builder(300, 600, 1).create()
+        val page = pdfDocument.startPage(pageInfo)
+        val canvas = page.canvas
+        val paint = Paint()
+
+        // Draw sale return details on the PDF
+        paint.textSize = 16f
+        canvas.drawText("Return Invoice No: ${saleReturn.returnInvoiceNo}", 10f, 25f, paint)
+        canvas.drawText("Customer Name: ${saleReturn.customerName}", 10f, 50f, paint)
+        canvas.drawText("Date: ${saleReturn.date}", 10f, 75f, paint)
+        canvas.drawText("Total Amount: ₹${saleReturn.totalAmount}", 10f, 100f, paint)
+
+        // Draw sale return items
+        var yPosition = 125f
+        paint.textSize = 14f
+        for (item in saleReturn.saleReturnItems) {
+            canvas.drawText("${item.productName} - ₹${item.amount} (Qty: ${item.qty})", 10f, yPosition, paint)
+            yPosition += 20f
+        }
+
+        pdfDocument.finishPage(page)
+
+        // Save the PDF to external storage
+        val fileName = "SaleReturn_${saleReturn.returnInvoiceNo}.pdf"
+        val file = File(getExternalFilesDir(null), fileName)
+        try {
+            pdfDocument.writeTo(FileOutputStream(file))
+            pdfDocument.close()
+
+            // Share the PDF
+            val uri = FileProvider.getUriForFile(this, "${packageName}.provider", file)
+            val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                type = "application/pdf"
+                putExtra(Intent.EXTRA_STREAM, uri)
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+            startActivity(Intent.createChooser(shareIntent, "Share Sale Return PDF"))
+        } catch (e: IOException) {
+            e.printStackTrace()
+            Toast.makeText(this, "Failed to generate PDF!", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun showDeleteConfirmationDialog(saleReturn: SaleReturnModel) {

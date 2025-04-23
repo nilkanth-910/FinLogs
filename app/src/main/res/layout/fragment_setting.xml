@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -8,53 +9,90 @@
     android:orientation="vertical">
     <include layout="@layout/top_bar"/>
 
-    <Button
-        android:id="@+id/btnAddProduct"
-        android:layout_width="wrap_content"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E8E8E8"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Add Item/Product Card with Blue Border -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="32dp"
-        android:backgroundTint="#2979FF"
-        android:textColor="#FFFFFF"
-        android:paddingStart="32dp"
-        android:paddingEnd="32dp"
-        android:text="Add Item/Product"/>
+        app:cardCornerRadius="12dp"
+        app:cardElevation="4dp"
+        app:cardBackgroundColor="#FFFFFF"
 
-    <Button
-        android:id="@+id/logoutButton"
-        android:layout_width="wrap_content"
+        >
+
+        <Button
+            android:id="@+id/btnAddProduct"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:textColor="#2979FF"
+            android:textStyle="bold"
+            android:textSize="17dp"
+            android:paddingStart="32dp"
+            android:paddingEnd="32dp"
+            android:text="Add Item/Product" />
+    </androidx.cardview.widget.CardView>
+
+    <!-- User Profile Card with Teal Border -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="24dp" android:backgroundTint="#FF6B6B"
-        android:textColor="#FFFFFF"
-        android:paddingStart="32dp"
-        android:paddingEnd="32dp"
-        android:text="Logout" />
+        android:layout_marginTop="24dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="4dp"
+        app:cardBackgroundColor="#FFFFFF"
 
-<!--    <androidx.cardview.widget.CardView-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginStart="32dp"-->
-<!--        android:layout_marginEnd="32dp"-->
-<!--        android:layout_marginTop="24dp"-->
-<!--        app:cardCornerRadius="8dp"-->
-<!--        app:cardElevation="4dp"-->
-<!--        android:backgroundTint="#FFFFFF"> <LinearLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:orientation="horizontal"-->
-<!--        android:padding="16dp"-->
-<!--        android:gravity="center_vertical">-->
+        >
 
-<!--        <com.google.android.material.switchmaterial.SwitchMaterial-->
-<!--            android:id="@+id/themeSwitch"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_weight="1"-->
-<!--            android:text="Dark Theme"-->
-<!--            android:textSize="16sp"-->
-<!--            tools:ignore="UseSwitchCompatOrMaterialXml" /> </LinearLayout>-->
-<!--    </androidx.cardview.widget.CardView>-->
+        <Button
+            android:id="@+id/btnUseProfile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:textColor="#000000"
+            android:textStyle="bold"
+            android:paddingStart="32dp"
+            android:textSize="17dp"
+            android:paddingEnd="32dp"
+            android:text="User Profile" />
+    </androidx.cardview.widget.CardView>
 
+    <!-- Logout Card with Red Border -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="24dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="4dp"
+        app:cardBackgroundColor="#FFFFFF"
 
+       >
+
+        <Button
+            android:id="@+id/btnLogout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:textColor="#FF6B6B"
+            android:textSize="17dp"
+            android:textStyle="bold"
+            android:paddingStart="32dp"
+            android:paddingEnd="32dp"
+            android:text="Logout" />
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>
 </LinearLayout>
