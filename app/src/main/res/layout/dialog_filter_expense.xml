@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:background="@drawable/dialog_rounded_background">
+
+        <TextView
+            android:id="@+id/edtFilterTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="16dp"
+            android:text="Filter"
+            android:textColor="#333333"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <!-- Filter by Name (if you still want it) -->
+        <EditText
+            android:id="@+id/edtName"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:hint="Name"
+            android:textColorHint="#666666"
+            android:textColor="#333333" />
+
+        <EditText
+            android:id="@+id/edtInvoiceNo"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:hint="Category"
+            android:textColorHint="#666666"
+            android:textColor="#333333"
+            android:layout_marginTop="15dp"/>
+
+        <!-- Filter by Price Range -->
+        <TextView
+            android:id="@+id/tvPriceRange"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Price Range"
+            android:textColor="#333333"
+            android:layout_marginTop="16dp"
+            android:textStyle="bold"/>
+
+        <LinearLayout
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <EditText
+                android:id="@+id/edtMinPrice"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Min"
+                android:inputType="numberDecimal"
+                android:textColorHint="#666666"
+                android:textColor="#333333"
+                android:layout_marginEnd="8dp" />
+
+            <EditText
+                android:id="@+id/edtMaxPrice"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Max"
+                android:inputType="numberDecimal"
+                android:textColorHint="#666666"
+                android:textColor="#333333" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Date Range"
+            android:textColor="#333333"
+            android:layout_marginTop="16dp"
+            android:textStyle="bold"/>
+
+        <LinearLayout
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <EditText
+                android:id="@+id/edtStartDate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Start Date"
+                android:focusableInTouchMode="false"
+                android:textColorHint="#666666"
+                android:textColor="#333333"
+                android:layout_marginEnd="8dp" />
+
+            <EditText
+                android:id="@+id/edtEndDate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="End Date"
+                android:focusableInTouchMode="false"
+                android:textColorHint="#666666"
+                android:textColor="#333333" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnFilter"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:text="Filter"
+            android:backgroundTint="#A5D1D1"
+            android:textColor="#333333"
+            android:layout_marginTop="16dp" />
+
+        <Button
+            android:id="@+id/btnClearFilter"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:text="Clear Filter"
+            android:backgroundTint="#D1C2E0"
+            android:textColor="#333333"
+            android:layout_marginTop="16dp" />
+
+        <Button
+            android:id="@+id/btnCancelItem"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:backgroundTint="#D18383"
+            android:textColor="#333333"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp" />
+
+    </LinearLayout>
+</ScrollView>

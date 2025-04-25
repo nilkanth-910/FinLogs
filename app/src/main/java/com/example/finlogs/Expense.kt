@@ -59,7 +59,7 @@ class Expense : AppCompatActivity() {
 
     private fun applyFilter(){
 
-        DialogUtils.filterDialog(this) { filterCriteria ->
+        ExpenseDialogUtils.filterDialog(this) { filterCriteria ->
             
             val filteredExpenses = reversedSnapshot.filter { expense ->
                 val matchesName = filterCriteria.name.isEmpty() || (expense.getValue(ExpenseModel::class.java)?.payee?.contains(filterCriteria.name, ignoreCase = true) ?: false)

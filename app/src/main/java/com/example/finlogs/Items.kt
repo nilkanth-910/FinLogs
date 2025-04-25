@@ -15,6 +15,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import kotlin.text.compareTo
 import kotlin.toString
 
 class Items : AppCompatActivity() {
@@ -57,20 +58,20 @@ class Items : AppCompatActivity() {
     }
 
     private fun applyFilter() {
-        DialogUtils.filterDialog(this) { filterCriteria ->
+        ItemsDialogUtils.filterDialog(this) { filterCriteria ->
             // Apply the filter criteria to the items list
             val filteredItems = itemsList.filter { itemSnapshot ->
                 val item = itemSnapshot.getValue(Product::class.java)
                 if (item != null) {
                     val matchesName = filterCriteria.name.isEmpty() || item.productName.contains(filterCriteria.name, ignoreCase = true)
-                    val matchesPrice = (filterCriteria.minPrice == null || item.grossPrice >= filterCriteria.minPrice) &&
-                            (filterCriteria.maxPrice == null || item.grossPrice <= filterCriteria.maxPrice)
-//                    val matchesStock = (filterCriteria.minStock == null || item.stock >= filterCriteria.minStock) &&
-//                            (filterCriteria.maxStock == null || item.stock <= filterCriteria.maxStock)
+                    val matchesPrice = (filterCriteria.minPrice == null || item.mrp >= filterCriteria.minPrice) &&
+                            (filterCriteria.maxPrice == null || item.mrp <= filterCriteria.maxPrice)
+                    val matchesStock = (filterCriteria.minStock == null || item.stock >= filterCriteria.minStock) &&
+                            (filterCriteria.maxStock == null || item.stock <= filterCriteria.maxStock)
+                    val matchesRate = (filterCriteria.minRate == null || item.grossPrice >= filterCriteria.minRate) &&
+                            (filterCriteria.maxRate == null || item.grossPrice <= filterCriteria.maxRate)
 
-                    matchesName && matchesPrice
-                            //&& matchesStock
-
+                    matchesName && matchesPrice && matchesStock && matchesRate
                 } else {
                     false
                 }
