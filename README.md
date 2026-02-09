@@ -12,12 +12,13 @@ FinLogs is an accounting application developed for Android using **Core Android 
 ## 📁 Project Structure
 
 FinLogs/
-├── app/ # Android app code
-├── gradle/ # Build system configuration
-├── build.gradle.kts # Android project build file
-├── settings.gradle.kts # Settings for Gradle
-├── gradlew & gradlew.bat # Gradle wrapper scripts
-└── gradle.properties # Project properties
+├── app/                     # Android app code
+├── gradle/                  # Build system configuration
+├── build.gradle.kts         # Android project build file
+├── settings.gradle.kts      # Settings for Gradle
+├── gradlew                  # Gradle wrapper script (Unix)
+├── gradlew.bat              # Gradle wrapper script (Windows)
+└── gradle.properties        # Project properties
 
 
 ## 🧩 Built With
